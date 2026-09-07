@@ -1,0 +1,3878 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Μνήμη &amp; Σοφία</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Μνήμη &amp; Σοφία">
+<style>
+  :root {
+    --bg: #EDE6D6;
+    --bg-soft: #E4DAC4;
+    --panel: #F6F1E4;
+    --ink: #2B2118;
+    --ink-soft: #6B5D4C;
+    --gold: #A9822F;
+    --gold-strong: #8C6A22;
+    --terracotta: #B5624A;
+    --card-back: #D9CBA8;
+    --card-back-hover: #CFBF97;
+    --success: #6B7F52;
+    --shadow: rgba(43, 33, 24, 0.18);
+    --focus: #B5624A;
+    --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14172A;
+      --bg-soft: #1B1F38;
+      --panel: #1E2240;
+      --ink: #F2EFE9;
+      --ink-soft: #A6ADD1;
+      --gold: #D4AF37;
+      --gold-strong: #E8C75B;
+      --terracotta: #D98B72;
+      --card-back: #262B4D;
+      --card-back-hover: #2F355C;
+      --success: #8FAE6E;
+      --shadow: rgba(0, 0, 0, 0.45);
+      --focus: #D98B72;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #14172A;
+    --bg-soft: #1B1F38;
+    --panel: #1E2240;
+    --ink: #F2EFE9;
+    --ink-soft: #A6ADD1;
+    --gold: #D4AF37;
+    --gold-strong: #E8C75B;
+    --terracotta: #D98B72;
+    --card-back: #262B4D;
+    --card-back-hover: #2F355C;
+    --success: #8FAE6E;
+    --shadow: rgba(0, 0, 0, 0.45);
+    --focus: #D98B72;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  .wrap {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  header.top {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 6vw, 2.9rem);
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+  }
+
+  .subtitle {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    max-width: 46ch;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* toolbar */
+  .toolbar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 280px;
+    z-index: 40;
+  }
+  .tool-btn {
+    background: var(--panel);
+    border: 1px solid var(--card-back);
+    color: var(--ink);
+    border-radius: 999px;
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+    font-family: var(--font-ui);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .tool-btn:focus-visible, button:focus-visible, input:focus-visible, .card:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* mode tabs */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: 1.5px solid var(--card-back);
+    background: var(--panel);
+    color: var(--ink-soft);
+    cursor: pointer;
+    min-height: 46px;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+  .tab-btn[aria-selected="true"] {
+    border-color: var(--gold);
+    color: var(--ink);
+    background: var(--bg-soft);
+  }
+
+  .panel {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 6px 24px var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .diff-btn {
+    font-family: var(--font-ui);
+    font-size: 0.98rem;
+    padding: 11px 18px;
+    border-radius: 10px;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .diff-btn[aria-pressed="true"] {
+    border-color: var(--terracotta);
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  .primary-btn {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 1.02rem;
+    padding: 13px 26px;
+    border-radius: 12px;
+    border: none;
+    background: var(--gold-strong);
+    color: #fff;
+    cursor: pointer;
+    min-height: 48px;
+  }
+  .primary-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .ghost-btn {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 11px 20px;
+    border-radius: 10px;
+    border: 1.5px solid var(--card-back);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    min-height: 44px;
+  }
+
+  .center { text-align: center; }
+  .mt16 { margin-top: 16px; }
+  .mt20 { margin-top: 20px; }
+
+  .field-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+  }
+  .text-input {
+    width: 100%;
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+
+  /* upload */
+  .dropzone {
+    border: 2px dashed var(--card-back);
+    border-radius: 14px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--ink-soft);
+  }
+  .dropzone:hover { border-color: var(--gold); }
+  .thumbs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .thumb {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--card-back);
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb button {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.55);
+    color: #fff;
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .thumb.active { border-color: var(--terracotta); border-width: 3px; }
+  .symbol-chip {
+    font-size: 1.6rem;
+    border: 1.5px solid var(--card-back);
+    border-radius: 10px;
+    padding: 10px 14px;
+    background: var(--bg);
+    cursor: pointer;
+    min-height: 44px;
+  }
+  .symbol-chip:hover { border-color: var(--terracotta); }
+  .upload-note {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* named packs (photos + symbols) */
+  .pack-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg);
+    border: 1.5px solid var(--card-back);
+    border-radius: 10px;
+    padding: 4px 4px 4px 16px;
+  }
+  .pack-chip.active {
+    border-color: var(--terracotta);
+    background: var(--terracotta);
+  }
+  .pack-select-btn {
+    background: none;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--ink);
+    cursor: pointer;
+    padding: 12px 8px;
+    min-height: 44px;
+  }
+  .pack-chip.active .pack-select-btn { color: #fff; }
+  .pack-delete-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.12);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  .pack-chip.active .pack-delete-btn { background: rgba(255,255,255,0.28); color: #fff; }
+  .pack-delete-btn.marked { background: var(--terracotta); color: #fff; }
+  .pack-chip.active .pack-delete-btn.marked { background: #fff; color: var(--terracotta); }
+
+  /* music track rows */
+  .track-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--card-back);
+    border-radius: 10px;
+    padding: 8px 8px 8px 14px;
+    margin-top: 8px;
+  }
+  .track-row.active { border-color: var(--terracotta); }
+  .track-name {
+    background: none;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 0.92rem;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    flex: 1;
+    padding: 6px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .shuffle-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  /* colors panel */
+  .color-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 360px;
+    margin: 0 auto;
+  }
+  .color-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 0.95rem;
+  }
+  .color-row input[type="color"] {
+    width: 52px;
+    height: 38px;
+    border: 1.5px solid var(--card-back);
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+    padding: 2px;
+  }
+
+  /* stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 26px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat .num {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold-strong);
+  }
+  .stat .lbl {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+
+  /* board */
+  .board {
+    display: grid;
+    gap: 12px;
+    margin: 0 auto 20px;
+  }
+  .card {
+    aspect-ratio: 1;
+    perspective: 800px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+  }
+  .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(.4,.2,.2,1);
+    border-radius: 12px;
+  }
+  .card.flipped .card-inner,
+  .card.matched .card-inner {
+    transform: rotateY(180deg);
+  }
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-back-face {
+    background: var(--card-back);
+    color: var(--gold-strong);
+  }
+  .card:hover .card-back-face { background: var(--card-back-hover); }
+  .card-front-face {
+    background: var(--panel);
+    transform: rotateY(180deg);
+    border: 1.5px solid var(--card-back);
+    overflow: hidden;
+  }
+  .card.matched .card-front-face {
+    border-color: var(--success);
+    box-shadow: 0 0 0 2px var(--success) inset;
+  }
+  .card-front-face.emoji-face { font-size: clamp(2.2rem, 9vw, 3.4rem); line-height: 1; }
+  .card-front-face.emoji-face.word-face {
+    font-size: clamp(0.8rem, 4.6vw, 1.3rem);
+    line-height: 1.25;
+    font-weight: 700;
+    font-family: var(--font-ui);
+    text-align: center;
+    padding: 6px;
+    overflow-wrap: break-word;
+  }
+  .card-front-face img { width: 100%; height: 100%; object-fit: cover; }
+  .card-back-face svg { width: 30%; height: 30%; opacity: 0.6; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-inner { transition: none; }
+  }
+
+  /* quote panel */
+  .quote-box {
+    min-height: 64px;
+    text-align: center;
+    padding: 14px 20px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--ink-soft);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .quote-box.show { opacity: 1; color: var(--ink); }
+
+  /* win overlay */
+  .win-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .win-card {
+    background: var(--panel);
+    border-radius: 20px;
+    padding: 36px 30px;
+    max-width: 420px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .win-card h2 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    margin: 0 0 10px;
+  }
+  .win-stats { color: var(--ink-soft); margin-bottom: 6px; }
+  .best-note { color: var(--gold-strong); font-weight: 600; margin-top: 8px; }
+  .win-quote {
+    font-weight: 700;
+    font-style: italic;
+    margin-top: 16px;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    line-height: 1.4;
+  }
+  .win-actions { display: flex; gap: 10px; justify-content: center; margin-top: 22px; flex-wrap: wrap; }
+
+  .settings-card { max-width: 640px; max-height: 85vh; overflow-y: auto; text-align: left; }
+  .settings-card .panel { margin-bottom: 16px; }
+  .settings-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-ui);
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .settings-menu-btn:hover { border-color: var(--gold); }
+  .settings-menu-btn .emoji { font-size: 1.6rem; }
+
+  .confetti-piece {
+    position: fixed;
+    top: -40px;
+    font-size: 1.8rem;
+    pointer-events: none;
+    z-index: 60;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    to { transform: translateY(110vh) rotate(360deg); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .confetti-piece { animation: none; display: none; }
+  }
+
+  .hidden { display: none !important; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap;
+  }
+
+  /* focused play mode: hide everything except the board while playing */
+  body.playing .top,
+  body.playing .tabs,
+  body.playing #setupClassic,
+  body.playing #setupPhotos,
+  body.playing #setupPuzzle {
+    display: none !important;
+  }
+  body.playing .wrap { max-width: 960px; padding-top: 60px; }
+
+  .puzzle-tile {
+    aspect-ratio: 1;
+    border: none;
+    cursor: pointer;
+    background-color: var(--card-back);
+    background-repeat: no-repeat;
+    border-radius: 4px;
+    outline-offset: 2px;
+  }
+  .puzzle-tile.selected {
+    outline: 4px solid var(--terracotta);
+    outline-offset: -2px;
+  }
+  .puzzle-tile.solved-flash {
+    outline: 4px solid var(--success);
+    outline-offset: -2px;
+  }
+
+  /* pagination */
+  .pager-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .pager-row.hidden { display: none !important; }
+  .pager-btn {
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 1.1rem;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .pager-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .pager-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    min-width: 96px;
+    text-align: center;
+  }
+
+  /* size slider (puzzle difficulty) */
+  .slider-wrap {
+    max-width: 420px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .size-slider {
+    width: 100%;
+    height: 40px;
+    cursor: pointer;
+    accent-color: var(--terracotta);
+  }
+  .slider-value {
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: var(--gold-strong);
+  }
+
+  /* collapsed step summary (puzzle setup: pack/photo chosen) */
+  .step-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 14px 0;
+    padding: 10px 14px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+  }
+  .step-summary-text {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+  .step-summary-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--card-back);
+  }
+  .link-btn {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* help overlay menu */
+  .help-card { max-width: 520px; }
+  .help-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .help-menu-btn {
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .help-menu-btn[aria-pressed="true"] {
+    border-color: var(--gold);
+    background: var(--bg-soft);
+    color: var(--ink);
+  }
+
+  /* draggable win card */
+  #winCard {
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .win-overlay.reveal-board {
+    background: transparent;
+  }
+
+  /* Tower of Hanoi */
+  .hanoi-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px auto 20px;
+    max-width: 620px;
+    padding: 0 8px;
+  }
+  .hanoi-pegs {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 5vw;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+  .hanoi-peg {
+    position: relative;
+    flex: 1 1 0;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    height: var(--hanoi-h, 220px);
+    cursor: pointer;
+    border-radius: 10px 10px 0 0;
+  }
+  .hanoi-peg::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 100%;
+    background: var(--card-back);
+    border-radius: 7px 7px 0 0;
+    z-index: 0;
+  }
+  .hanoi-peg.selected {
+    background: rgba(196, 140, 60, 0.14);
+  }
+  .hanoi-peg.selected::before {
+    background: var(--terracotta);
+  }
+  .hanoi-base {
+    width: 100%;
+    max-width: 600px;
+    height: 26px;
+    margin-top: -1px;
+    background: var(--card-back);
+    border-radius: 13px;
+    box-shadow: 0 4px 8px var(--shadow);
+    position: relative;
+    z-index: 2;
+  }
+  .hanoi-disc {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    height: var(--disc-h, 26px);
+    width: var(--disc-w, 80%);
+    max-width: 100%;
+    border-radius: 999px;
+    margin-bottom: 3px;
+    border: 2px solid rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 4px var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 3px rgba(0, 0, 0, 0.35);
+    font-family: var(--font-ui);
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .hanoi-label {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin-top: 8px;
+  }
+
+  /* keep short phone screens comfortable */
+  @media (max-height: 700px) {
+    .wrap { padding-top: 18px; padding-bottom: 24px; }
+    header.top { margin-bottom: 14px; }
+    h1 { font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 2px; }
+    .subtitle { font-size: 0.85rem; }
+    .tabs { margin-bottom: 12px; }
+    .tab-btn { padding: 9px 14px; min-height: 38px; font-size: 0.9rem; }
+    .panel { padding: 16px; }
+    body.playing .wrap { padding-top: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <button class="tool-btn" id="helpToggle">❓</button>
+  <button class="tool-btn" id="settingsToggle">⚙️</button>
+  <button class="tool-btn" id="themeToggle">🌓</button>
+  <button class="tool-btn" id="soundToggle">🔊</button>
+  <button class="tool-btn" id="musicToggle">▶️</button>
+  <button class="tool-btn" id="langToggle">EN</button>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <h1 id="pageTitle">Μνήμη &amp; Σοφία</h1>
+    <p class="subtitle" id="pageSubtitle"></p>
+  </header>
+
+  <div class="tabs" role="tablist" aria-label="Τρόπος παιχνιδιού">
+    <button class="tab-btn" id="tabClassic" role="tab" aria-selected="true"></button>
+    <button class="tab-btn" id="tabPhotos" role="tab" aria-selected="false"></button>
+    <button class="tab-btn" id="tabPuzzle" role="tab" aria-selected="false"></button>
+    <button class="tab-btn" id="tabHanoi" role="tab" aria-selected="false"></button>
+  </div>
+
+  <!-- SETUP: classic -->
+  <section class="panel" id="setupClassic">
+    <p class="center" style="margin-top:0;color:var(--ink-soft)" id="classicDiffHeading"></p>
+    <div class="field-row" id="diffButtons"></div>
+    <p class="center" style="margin:18px 0 8px;color:var(--ink-soft);font-size:0.92rem;" id="classicPacksHeading"></p>
+    <div class="field-row" id="classicPackList"></div>
+    <p class="center upload-note" id="activeSymbolsIndicator" style="margin-top:10px;"></p>
+    <div class="center mt20">
+      <button class="primary-btn" id="startClassicBtn"></button>
+    </div>
+  </section>
+
+  <!-- SETUP: photos -->
+  <section class="panel hidden" id="setupPhotos">
+    <p class="center" style="margin-top:0;color:var(--ink-soft)" id="packsHeading"></p>
+    <div class="field-row" id="packList"></div>
+    <div class="pager-row" id="packPager"></div>
+    <p class="upload-note" id="packListNote"></p>
+    <p class="center" id="selectedPackLabel" style="font-weight:600;margin-top:10px;"></p>
+
+    <div id="roundSizeWrap" class="hidden mt16">
+      <p class="center" style="margin:0 0 10px;color:var(--ink-soft)" id="roundSizeHeading"></p>
+      <div class="field-row" id="roundSizeButtons"></div>
+      <p class="upload-note" id="roundSizeNote"></p>
+    </div>
+    <div class="center mt20">
+      <button class="primary-btn" id="startPhotosBtn" disabled></button>
+    </div>
+  </section>
+
+  <!-- SETUP: puzzle -->
+  <section class="panel hidden" id="setupPuzzle">
+    <p class="center" style="margin-top:0;color:var(--ink-soft);font-size:0.92rem;" id="puzzleIntro"></p>
+
+    <div id="puzzlePackStep">
+      <p class="center" style="margin:0 0 10px;color:var(--ink-soft)" id="puzzlePacksHeading"></p>
+      <div class="field-row" id="puzzlePackList"></div>
+      <div class="pager-row" id="puzzlePackPager"></div>
+      <p class="upload-note" id="puzzlePackListNote"></p>
+    </div>
+    <div id="puzzlePackSummary" class="hidden step-summary">
+      <span class="step-summary-text" id="puzzlePackSummaryText"></span>
+      <button class="link-btn" id="changePuzzlePackBtn"></button>
+    </div>
+
+    <div id="puzzlePhotoChoiceWrap" class="hidden mt20">
+      <p class="center" style="margin:0 0 10px;color:var(--ink-soft)" id="puzzleChoosePhotoHeading"></p>
+      <div class="thumbs" id="puzzlePhotoChoices"></div>
+      <div class="pager-row" id="puzzlePhotoPager"></div>
+      <div class="center mt16">
+        <button class="ghost-btn" id="deleteSelectedPuzzlePhotosBtn" disabled></button>
+      </div>
+    </div>
+    <div id="puzzlePhotoSummary" class="hidden step-summary">
+      <img id="puzzlePhotoSummaryImg" class="step-summary-thumb" alt="">
+      <span class="step-summary-text" id="puzzlePhotoSummaryText"></span>
+      <button class="link-btn" id="changePuzzlePhotoBtn"></button>
+    </div>
+
+    <div id="puzzleSizeWrap" class="hidden mt20">
+      <p class="center" style="margin:0 0 10px;color:var(--ink-soft)" id="puzzleSizeHeading"></p>
+      <div class="slider-wrap">
+        <input type="range" id="puzzleSizeSlider" class="size-slider" min="2" max="18" step="1" value="4">
+        <div class="slider-value" id="puzzleSizeValue">4 × 4</div>
+      </div>
+    </div>
+    <div class="center mt20 hidden" id="puzzleStartWrap">
+      <button class="primary-btn" id="startPuzzleBtn"></button>
+    </div>
+  </section>
+
+  <!-- SETUP: hanoi -->
+  <section class="panel hidden" id="setupHanoi">
+    <p class="center" style="margin-top:0;color:var(--ink-soft);font-size:0.92rem;" id="hanoiIntro"></p>
+    <p class="center" style="margin:0 0 10px;color:var(--ink-soft)" id="hanoiDiscsHeading"></p>
+    <div class="field-row" id="hanoiDiscButtons"></div>
+    <div class="center mt20">
+      <button class="primary-btn" id="startHanoiBtn"></button>
+    </div>
+  </section>
+
+  <div class="win-overlay hidden" id="settingsOverlay" role="dialog" aria-modal="true">
+    <div class="win-card settings-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="tool-btn hidden" id="settingsBackBtn">←</button>
+          <h2 id="settingsTitle" style="margin:0;"></h2>
+        </div>
+        <button class="tool-btn" id="closeSettingsBtn">✕</button>
+      </div>
+
+      <div id="settingsMenu">
+        <button class="settings-menu-btn" id="menuPhotosBtn"><span class="emoji">📷</span><span id="menuPhotosLabel"></span></button>
+        <button class="settings-menu-btn" id="menuSymbolsBtn"><span class="emoji">🦋</span><span id="menuSymbolsLabel"></span></button>
+        <button class="settings-menu-btn" id="menuQuotesBtn"><span class="emoji">💬</span><span id="menuQuotesLabel"></span></button>
+        <button class="settings-menu-btn" id="menuMusicBtn"><span class="emoji">🎵</span><span id="menuMusicLabel"></span></button>
+        <button class="settings-menu-btn" id="menuSfxBtn"><span class="emoji">🔔</span><span id="menuSfxLabel"></span></button>
+        <button class="settings-menu-btn" id="menuColorsBtn"><span class="emoji">🎨</span><span id="menuColorsLabel"></span></button>
+      </div>
+
+      <div class="panel hidden" id="settingsSectionPhotos">
+          <p class="center" style="margin-top:0;color:var(--ink-soft);font-size:0.92rem;" id="photosIntro"></p>
+
+          <div class="center mt16" style="margin-bottom:18px;">
+            <p class="upload-note" id="optimizePhotosIntro" style="margin-bottom:8px;"></p>
+            <button class="ghost-btn" id="optimizePhotosBtn"></button>
+            <p class="upload-note" id="optimizePhotosNote" style="margin-top:8px;"></p>
+          </div>
+
+          <label class="field-label" id="packNameLabel" for="packNameInput"></label>
+          <input type="text" id="packNameInput" class="text-input">
+          <div class="dropzone" id="dropzone" tabindex="0" role="button">
+            <p style="margin:0 0 4px;font-weight:600" id="dzPhotosTitle"></p>
+            <p style="margin:0;font-size:0.9rem" id="dzPhotosSubtitle"></p>
+            <input type="file" id="fileInput" accept="image/*" multiple class="hidden">
+          </div>
+          <div class="thumbs" id="thumbs"></div>
+          <p class="upload-note" id="uploadNote"></p>
+          <div class="center mt16">
+            <button class="primary-btn" id="addToPackBtn" disabled></button>
+          </div>
+
+          <div class="hidden mt20" id="existingPackPhotosWrap">
+            <p class="upload-note" id="existingPackPhotosLabel"></p>
+            <div class="thumbs" id="existingPackPhotosGrid"></div>
+            <div class="center mt16">
+              <button class="ghost-btn" id="deleteSelectedPackPhotosBtn" disabled></button>
+            </div>
+          </div>
+          <div class="center mt20" style="border-top:1.5px solid var(--card-back);padding-top:18px;">
+            <p class="upload-note" id="backupPhotosIntro" style="margin-top:0;"></p>
+            <div class="field-row" style="justify-content:center;">
+              <button class="ghost-btn" id="exportPhotosBtn"></button>
+              <button class="ghost-btn" id="importPhotosBtn"></button>
+            </div>
+            <input type="file" id="importPhotosInput" accept="application/json,.json" class="hidden">
+            <p class="upload-note" id="backupPhotosNote"></p>
+          </div>
+      </div>
+
+  <div class="panel hidden" id="settingsSectionSymbols">
+      <p id="symbolsInstructions" style="margin:0 0 10px;color:var(--ink-soft);font-size:0.95rem;line-height:1.6;"></p>
+
+      <label class="field-label" id="iconPackNameLabel" for="iconPackNameInput"></label>
+      <input type="text" id="iconPackNameInput" class="text-input">
+      <textarea id="customIconsNew" rows="3" style="width:100%;font-family:var(--font-ui);font-size:1.3rem;padding:10px;border-radius:10px;border:1.5px solid var(--card-back);background:var(--bg);color:var(--ink);resize:vertical;"></textarea>
+      <div class="center mt16">
+        <button class="primary-btn" id="saveIconPackBtn"></button>
+      </div>
+      <p class="upload-note" id="iconPackSaveNote"></p>
+
+      <div class="mt20">
+        <p class="center" style="margin:0 0 10px;" id="iconPacksHeading"></p>
+        <div class="field-row" id="iconPackList"></div>
+        <p class="upload-note" id="iconPackListNote"></p>
+        <div class="hidden mt16" id="iconPackSymbolsWrap">
+          <p class="upload-note" id="iconPackSymbolsLabel"></p>
+          <div id="iconPackSymbolsGrid" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;"></div>
+        </div>
+        <p class="upload-note" id="iconsPreview" style="font-size:1.4rem;line-height:1.8;margin-top:12px;"></p>
+        <div class="center mt20">
+          <button class="ghost-btn" id="deleteSelectedIconPacksBtn" disabled></button>
+        </div>
+        <div class="center mt20" style="border-top:1.5px solid var(--card-back);padding-top:18px;">
+          <p class="upload-note" id="backupIconPacksIntro" style="margin-top:0;"></p>
+          <div class="field-row" style="justify-content:center;">
+            <button class="ghost-btn" id="exportIconPacksBtn"></button>
+            <button class="ghost-btn" id="importIconPacksBtn"></button>
+          </div>
+          <input type="file" id="importIconPacksInput" accept="application/json,.json" class="hidden">
+          <p class="upload-note" id="backupIconPacksNote"></p>
+        </div>
+      </div>
+  </div>
+
+  <div class="panel hidden" id="settingsSectionQuotes">
+      <p id="quotesInstructions" style="margin:0 0 10px;color:var(--ink-soft);font-size:0.95rem;line-height:1.6;"></p>
+      <div class="center" style="margin-bottom:10px;">
+        <button class="ghost-btn" id="loadQuotesBtn"></button>
+      </div>
+      <textarea id="customQuotes" rows="5" style="width:100%;font-family:var(--font-ui);font-size:0.95rem;padding:10px;border-radius:10px;border:1.5px solid var(--card-back);background:var(--bg);color:var(--ink);resize:vertical;"></textarea>
+      <div class="field-row" style="margin-top:12px;">
+        <input type="text" id="newQuoteInput" class="text-input" style="flex:1;min-width:180px;margin-bottom:0;">
+        <button class="ghost-btn" id="addQuoteBtn"></button>
+      </div>
+      <div id="quotesListContainer" style="max-height:280px;overflow-y:auto;margin-top:14px;"></div>
+      <div class="center mt16">
+        <label class="ghost-btn" id="quotesFileLabel" for="quotesFileInput" style="display:inline-block;cursor:pointer;"></label>
+        <input type="file" id="quotesFileInput" accept=".txt,text/plain" class="hidden">
+      </div>
+  </div>
+
+  <div class="panel hidden" id="settingsSectionMusic">
+      <p id="musicInstructions" style="margin:0 0 10px;color:var(--ink-soft);font-size:0.95rem;line-height:1.6;"></p>
+      <div class="dropzone" id="musicDropzone" tabindex="0" role="button">
+        <p style="margin:0 0 4px;font-weight:600" id="dzMusicTitle"></p>
+        <p style="margin:0;font-size:0.9rem" id="dzMusicSubtitle"></p>
+        <input type="file" id="musicFileInput" accept="audio/*" multiple class="hidden">
+      </div>
+      <div class="mt20">
+        <p class="center" style="margin:0 0 10px;" id="musicListHeading"></p>
+        <div id="musicList"></div>
+        <p class="upload-note" id="musicListNote"></p>
+      </div>
+      <div class="shuffle-row">
+        <input type="checkbox" id="shuffleToggle" style="width:20px;height:20px;">
+        <label for="shuffleToggle" id="shuffleLabel"></label>
+      </div>
+      <p class="upload-note" id="nowPlayingLabel" style="margin-top:10px;"></p>
+  </div>
+
+  <div class="panel hidden" id="settingsSectionSfx">
+      <p id="sfxInstructions" style="margin:0 0 14px;color:var(--ink-soft);font-size:0.95rem;line-height:1.6;"></p>
+
+      <p class="field-label" id="sfxFlipLabel"></p>
+      <div class="dropzone" id="sfxFlipDropzone" tabindex="0" role="button">
+        <p id="dzSoundTitle1" style="margin:0;font-weight:600;"></p>
+        <input type="file" id="sfxFlipInput" accept="audio/*" class="hidden">
+      </div>
+      <p class="upload-note" id="sfxFlipStatus"></p>
+      <div class="center" style="margin-top:8px;">
+        <button class="ghost-btn hidden" id="sfxFlipRemoveBtn"></button>
+      </div>
+
+      <div class="mt20"></div>
+
+      <p class="field-label" id="sfxMatchLabel"></p>
+      <div class="dropzone" id="sfxMatchDropzone" tabindex="0" role="button">
+        <p id="dzSoundTitle2" style="margin:0;font-weight:600;"></p>
+        <input type="file" id="sfxMatchInput" accept="audio/*" class="hidden">
+      </div>
+      <p class="upload-note" id="sfxMatchStatus"></p>
+      <div class="center" style="margin-top:8px;">
+        <button class="ghost-btn hidden" id="sfxMatchRemoveBtn"></button>
+      </div>
+  </div>
+
+  <div class="panel hidden" id="settingsSectionColors">
+      <p id="appearanceInstructions" style="margin:0 0 14px;color:var(--ink-soft);font-size:0.95rem;line-height:1.6;"></p>
+      <div class="color-grid">
+        <label class="color-row"><span id="colorBgLabel"></span><input type="color" id="colorBg" value="#EDE6D6"></label>
+        <label class="color-row"><span id="colorPanelLabel"></span><input type="color" id="colorPanel" value="#F6F1E4"></label>
+        <label class="color-row"><span id="colorInkLabel"></span><input type="color" id="colorInk" value="#2B2118"></label>
+        <label class="color-row"><span id="colorAccentLabel"></span><input type="color" id="colorAccent" value="#8C6A22"></label>
+        <label class="color-row"><span id="colorAccent2Label"></span><input type="color" id="colorAccent2" value="#B5624A"></label>
+      </div>
+      <div class="center mt16">
+        <button class="ghost-btn" id="resetColorsBtn"></button>
+      </div>
+  </div>
+
+    </div>
+  </div>
+
+  <div class="win-overlay hidden" id="helpOverlay" role="dialog" aria-modal="true">
+    <div class="win-card help-card">
+      <h2 id="helpTitle"></h2>
+      <div class="help-menu" id="helpMenu">
+        <button class="help-menu-btn" id="helpMenuClassic" aria-pressed="true"></button>
+        <button class="help-menu-btn" id="helpMenuPhotos" aria-pressed="false"></button>
+        <button class="help-menu-btn" id="helpMenuPuzzle" aria-pressed="false"></button>
+        <button class="help-menu-btn" id="helpMenuHanoi" aria-pressed="false"></button>
+      </div>
+      <p id="helpBody" style="color:var(--ink-soft);line-height:1.6;text-align:left;"></p>
+      <div class="win-actions">
+        <button class="primary-btn" id="closeHelpBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <section id="gameArea" class="hidden">
+    <div class="stats" id="classicStatsBar">
+      <div class="stat"><div class="num" id="statMoves">0</div><div class="lbl" id="statMovesLbl"></div></div>
+      <div class="stat"><div class="num" id="statPairs">0/0</div><div class="lbl" id="statPairsLbl"></div></div>
+    </div>
+    <div class="board" id="board"></div>
+    <div class="quote-box" id="quoteBox" aria-live="polite"></div>
+    <div class="center" id="classicBottomRow">
+      <button class="ghost-btn" id="backToMenuBtn"></button>
+    </div>
+  </section>
+
+  <!-- PUZZLE GAME -->
+  <section id="puzzleGameArea" class="hidden">
+    <div class="stats" id="puzzleStatsBar">
+      <div class="stat"><div class="num" id="puzzleMoves">0</div><div class="lbl" id="statMovesLbl2"></div></div>
+    </div>
+    <div class="center mt16" id="puzzleTargetWrap" style="margin-bottom:10px;">
+      <p style="margin:0 0 6px;color:var(--ink-soft);font-size:0.9rem;" id="puzzleTargetLabel"></p>
+      <img id="puzzleTargetImg" style="width:80px;height:80px;object-fit:cover;border-radius:10px;border:2px solid var(--card-back);">
+    </div>
+    <div class="board" id="puzzleBoard" style="gap:3px;"></div>
+    <div class="center mt16" id="puzzleBottomRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="ghost-btn" id="resetPuzzleBtn"></button>
+      <button class="ghost-btn" id="backToMenuBtnPuzzle"></button>
+    </div>
+  </section>
+
+  <!-- HANOI GAME -->
+  <section id="hanoiGameArea" class="hidden">
+    <div class="stats" id="hanoiStatsBar">
+      <div class="stat"><div class="num" id="hanoiMoves">0</div><div class="lbl" id="statMovesLbl3"></div></div>
+      <div class="stat"><div class="num" id="hanoiMinMoves">0</div><div class="lbl" id="hanoiMinMovesLbl"></div></div>
+    </div>
+    <div class="hanoi-board" id="hanoiBoard"></div>
+    <div class="center mt16" id="hanoiBottomRow" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+      <button class="ghost-btn" id="resetHanoiBtn"></button>
+      <button class="ghost-btn" id="backToMenuBtnHanoi"></button>
+    </div>
+  </section>
+</div>
+
+<div class="win-overlay hidden" id="winOverlay" role="dialog" aria-modal="true">
+  <div class="win-card" id="winCard">
+    <h2 id="winTitle"></h2>
+    <p class="win-stats" id="winStatsText"></p>
+    <p class="best-note hidden" id="bestNote"></p>
+    <p class="win-quote hidden" id="winQuote"></p>
+    <div class="win-actions">
+      <button class="primary-btn" id="playAgainBtn"></button>
+      <button class="ghost-btn" id="changeModeBtn"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Ask the browser to protect this site's saved data (photos, symbol
+  // packs, quotes, music) from automatic cleanup. Safe to call every time;
+  // does nothing on browsers that don't support it.
+  try {
+    if (navigator.storage && navigator.storage.persist) { navigator.storage.persist(); }
+  } catch (e) {}
+
+  /* =========================================================
+     TRANSLATIONS
+  ========================================================= */
+  var TRANSLATIONS = {
+    el: {
+      appTitle: "Μνήμη & Σοφία",
+      pageSubtitle: "Ένα παιχνίδι μνήμης που γίνεται στιγμή περισυλλογής — παίξε με σύμβολα ή με τις δικές σου φωτογραφίες.",
+      tabClassicLabel: "Κλασικό",
+      tabPhotosLabel: "Οι φωτογραφίες μου",
+      tabPuzzleLabel: "Παζλ",
+      tabHanoiLabel: "Πύργος Ανόι",
+      classicDiffHeading: "Διάλεξε δυσκολία",
+      classicPacksHeading: "Ποια σύμβολα;",
+      backupIconPacksIntro: "Κράτα τα πακέτα σου σε ένα αρχείο δικό σου, έτσι δεν θα χαθούν ξανά — αποθήκευσέ το π.χ. στο Files ή στείλ' το με email στον εαυτό σου.",
+      exportIconPacksBtnLabel: "Λήψη αντιγράφου ασφαλείας",
+      importIconPacksBtnLabel: "Επαναφορά από αρχείο",
+      backupExportDoneNote: "Το αρχείο κατέβηκε — φύλαξέ το κάπου ασφαλές.",
+      backupExportEmptyNote: "Δεν έχεις ακόμα κανένα πακέτο για αποθήκευση.",
+      backupImportDoneNote: "Έγινε! Επαναφέρθηκαν {n} πακέτα.",
+      backupImportErrorNote: "Το αρχείο δεν αναγνωρίστηκε — βεβαιώσου ότι είναι αρχείο αντιγράφου από αυτό το παιχνίδι.",
+      diffEasy: "Εύκολο",
+      diffMedium: "Μεσαίο",
+      diffHard: "Δύσκολο",
+      diffVEasy: "Πολύ Εύκολο",
+      diffAdvanced: "Προχωρημένο",
+      diffVHard: "Πολύ Δύσκολο",
+      diffPairsLabel: "{label} ({n} ζευγάρια)",
+      startGameBtn: "Ξεκίνα το παιχνίδι",
+      photosIntro: "Τα πακέτα φωτογραφιών μένουν αποθηκευμένα σε αυτόν τον browser, σε αυτό το Mac — δεν χρειάζεται να τα ξαναανεβάζεις κάθε φορά.",
+      packNameLabel: "Όνομα πακέτου",
+      packNamePlaceholder: "π.χ. Ελένη",
+      dzPhotosTitle: "Πάτα εδώ για να διαλέξεις φωτογραφίες",
+      dzPhotosSubtitle: "Έως 100 φωτογραφίες κάθε φορά",
+      addToPackBtnLabel: "Προσθήκη στο πακέτο",
+      packsHeading: "Τα πακέτα σου",
+      packsEmptyNote: "Δεν έχεις φτιάξει ακόμα κανένα πακέτο — άνοιξε τις Ρυθμίσεις ⚙️ για να φτιάξεις ένα.",
+      packsUnavailableNote: "Η αποθήκευση πακέτων δεν είναι διαθέσιμη σε αυτόν τον browser.",
+      packSaveErrorNote: "Κάτι πήγε στραβά με την αποθήκευση. Δοκίμασε ξανά.",
+      existingPackPhotosLabel: "Οι φωτογραφίες σε αυτό το πακέτο — πάτα πάνω σε όσες θέλεις να σβήσεις (θα φωτίζεται το περίγραμμά τους):",
+      deleteSelectedBtnLabel: "Διαγραφή επιλεγμένων ({n})",
+      selectedPackLabel: "Επιλεγμένο πακέτο: {name}",
+      packChipLabel: "{name} ({count})",
+      roundSizeHeading: "Πόσα ζευγάρια σε αυτό το παιχνίδι;",
+      roundSizeNote: "Κάθε φορά που παίζεις, διαλέγονται τυχαία από το πακέτο — έτσι έχεις ποικιλία.",
+      pairsCount: "{n} ζευγάρια",
+      needAtLeast4: "Χρειάζονται τουλάχιστον 4 φωτογραφίες (έχεις {n}).",
+      willAdd: "Θα προστεθούν {n} φωτογραφίες στο πακέτο.",
+      puzzleIntro: "Διάλεξε ένα από τα πακέτα σου, μετά μία φωτογραφία μέσα από αυτό — θα τη χωρίσουμε σε 16 κομμάτια και θα τα ανακατέψουμε. Πάτα δύο κομμάτια για να τα αλλάξεις θέση, μέχρι να ξαναφτιάξεις την εικόνα.",
+      puzzlePacksHeading: "Τα πακέτα σου",
+      puzzleChoosePhotoHeading: "Διάλεξε μια φωτογραφία (πάτα πάνω της για να επιλεγεί, ή διάλεξε παραπάνω από μία για να τις σβήσεις)",
+      puzzleSizeHeading: "Πόσο μεγάλο παζλ;",
+      puzzleSizeValueLabel: "{n} × {n}",
+      startPuzzleBtnLabel: "Ξεκίνα το παζλ",
+      puzzleTargetLabel: "Στόχος",
+      resetPuzzleBtnLabel: "Λύσε το παζλ",
+      pagerLabel: "Σελίδα {page} από {total}",
+      pagerPrevAria: "Προηγούμενη σελίδα",
+      pagerNextAria: "Επόμενη σελίδα",
+      hanoiIntro: "Σκοπός: να μεταφέρεις όλους τους δίσκους από την πρώτη βάση στην τελευταία, έναν-έναν. Ποτέ μεγάλος δίσκος πάνω σε μικρότερο.",
+      hanoiDiscsHeading: "Πόσους δίσκους θέλεις;",
+      hanoiDiscsCountLabel: "{n} δίσκοι",
+      startHanoiBtnLabel: "Ξεκίνα το παιχνίδι",
+      hanoiMinMovesLbl: "Ελάχιστες",
+      hanoiPegAria: "Βάση {n}",
+      resetHanoiBtnLabel: "Ξεκίνα ξανά",
+      puzzlePackSummaryLabel: "Πακέτο: {name}",
+      puzzlePhotoSummaryLabel: "Φωτογραφία επιλεγμένη",
+      changeBtnLabel: "Αλλαγή",
+      helpMenuClassicLabel: "Κάρτες Κλασικό",
+      helpMenuPhotosLabel: "Κάρτες Φωτογραφίες",
+      helpMenuPuzzleLabel: "Παζλ",
+      helpMenuHanoiLabel: "Πύργος Ανόι",
+      helpBodyPhotos: "Γύρνα δύο κάρτες πατώντας πάνω τους. Αν ταιριάζουν, μένουν ανοιχτές. Αν όχι, ξαναγυρίζουν — προσπάθησε να θυμηθείς πού ήταν. Εδώ οι κάρτες είναι οι δικές σου φωτογραφίες: διάλεξε ή φτιάξε ένα πακέτο από τις Ρυθμίσεις ⚙️ πριν ξεκινήσεις. Σκοπός: να βρεις όλα τα ζευγάρια!",
+      helpBodyPuzzle: "Διάλεξε ένα από τα πακέτα σου και μια φωτογραφία μέσα από αυτό — θα τη χωρίσουμε σε κομμάτια και θα τα ανακατέψουμε. Πάτα δύο κομμάτια για να τα αλλάξεις θέση, μέχρι να ξαναφτιάξεις την εικόνα. Αν κάπου κολλήσεις, το κουμπί «Λύσε το παζλ» σου δείχνει αμέσως τη λυμένη εικόνα.",
+      helpBodyHanoi: "Σκοπός είναι να μεταφέρεις όλους τους δίσκους από την πρώτη βάση στην τελευταία. Πάτα μια βάση για να σηκώσεις τον πάνω δίσκο της, μετά πάτα μια άλλη βάση για να τον αφήσεις εκεί. Μπορείς να βάλεις έναν δίσκο μόνο πάνω σε μεγαλύτερο δίσκο, ποτέ πάνω σε μικρότερο.",
+      fileTypeNotRecognized: "Δεν αναγνωρίστηκε ο τύπος του αρχείου. Δοκίμασε ξανά ή διάλεξε άλλο αρχείο.",
+      processingPhotos: "Επεξεργασία {n} φωτογραφιών, μια στιγμή...",
+      optimizePhotosBtnLabel: "Βελτίωση ταχύτητας παλαιών φωτογραφιών",
+      optimizePhotosIntro: "Αν πρόσθεσες φωτογραφίες παλαιότερα, πάτα εδώ μία φορά για να γίνουν πιο ελαφριές — το παιχνίδι θα τρέχει πιο γρήγορα.",
+      optimizingPhotosNote: "Βελτίωση φωτογραφιών... {done}/{total}",
+      optimizePhotosDoneNote: "Έτοιμο! Βελτιώθηκαν {n} φωτογραφίες.",
+      optimizePhotosNoneNote: "Όλες οι φωτογραφίες σου είναι ήδη γρήγορες.",
+      backupPhotosIntro: "Κράτα όλα τα πακέτα φωτογραφιών σου σε ένα αρχείο δικό σου, έτσι δεν θα χαθούν ξανά. Με πολλές φωτογραφίες, η λήψη μπορεί να πάρει λίγη ώρα και το αρχείο να βγει μεγάλο — φυσιολογικό.",
+      exportPhotosBtnLabel: "Λήψη αντιγράφου ασφαλείας",
+      importPhotosBtnLabel: "Επαναφορά από αρχείο",
+      backupPhotosExportEmptyNote: "Δεν έχεις ακόμα καμία φωτογραφία για αποθήκευση.",
+      backupPhotosExportProgress: "Ετοιμασία αντιγράφου... {done}/{total}",
+      backupPhotosExportDoneNote: "Το αρχείο κατέβηκε — φύλαξέ το κάπου ασφαλές.",
+      backupPhotosImportProgress: "Επαναφορά... {done}/{total}",
+      backupPhotosImportDoneNote: "Έγινε! Επαναφέρθηκαν {n} φωτογραφίες.",
+      backupPhotosImportErrorNote: "Το αρχείο δεν αναγνωρίστηκε — βεβαιώσου ότι είναι αρχείο αντιγράφου φωτογραφιών από αυτό το παιχνίδι.",
+      symbolsSummary: "Σύμβολα του Κλασικού",
+      symbolsInstructions: "Στο Mac σου πάτα Control + Command + Space για να ανοίξει ο επιλογέας emoji — βρες ό,τι σου αρέσει και κάνε διπλό κλικ για να το αντιγράψεις. Μπορείς επίσης να γράψεις λέξεις αντί για σύμβολα — μία λέξη σε κάθε γραμμή, ή χωρισμένες με κόμμα. Φτιάξε πακέτα με όνομα, και διάλεξε ποιο θα χρησιμοποιείς στο Κλασικό. Για να διαγράψεις ένα πακέτο, πάτα το κόκκινο × δίπλα του (κοκκινίζει) και μετά πάτα «Διαγραφή επιλεγμένων».",
+      iconPackNameLabel: "Όνομα πακέτου συμβόλων",
+      iconPackNamePlaceholder: "π.χ. Ζώα",
+      customIconsPlaceholder: "🦋 🐢 🦉 🌸 ...  ή λέξεις: ΥΠΟΜΟΝΗ, ΓΑΛΗΝΗ, ΧΑΡΑ",
+      saveIconPackBtnLabel: "Αποθήκευση πακέτου",
+      iconPacksHeading: "Τα πακέτα συμβόλων σου",
+      iconPacksEmptyNote: "Χρησιμοποιείται το βασικό σετ συμβόλων. Φτιάξε το πρώτο σου πακέτο από πάνω.",
+      iconPackSymbolsLabel: "Τα σύμβολα σε αυτό το πακέτο — πάτα ένα για να το σβήσεις:",
+      iconPackNeedName: "Γράψε πρώτα ένα όνομα πακέτου.",
+      iconPackNeedMore: "Χρειάζονται τουλάχιστον 6 σύμβολα (έχεις {n}).",
+      iconsPreviewLabel: "{n} σύμβολα: {list}",
+      quotesSummary: "Ρήσεις που εμφανίζονται στο παιχνίδι",
+      quotesInstructions: "Μερικές είναι αρχαίες, γνωστές δελφικές ρήσεις. Οι υπόλοιπες τις έγραψα ειδικά για το παιχνίδι, στο πνεύμα του InnerLife. Αν θες, γράψε εδώ τις δικές σου — μία σε κάθε γραμμή — ή φόρτωσε ένα αρχείο .txt. Θα εμφανίζονται αυτές αντί των δικών μου, μία τυχαία κάθε φορά.",
+      customQuotesPlaceholder: "Μία σκέψη ανά γραμμή...",
+      quotesFileLabel: "Φόρτωσε αρχείο .txt",
+      loadQuotesBtnLabel: "Φόρτωσε εδώ τις 44 ρήσεις, για να τις επεξεργαστείς",
+      addQuoteBtnLabel: "Προσθήκη",
+      newQuotePlaceholder: "Γράψε μια νέα ρήση...",
+      musicSummary: "Μουσική",
+      musicInstructions: "Ανέβασε τα δικά σου κομμάτια — θα παίζουν με τη σειρά όσο παίζεις, εκτός αν ενεργοποιήσεις τυχαία αναπαραγωγή.",
+      dzMusicTitle: "Πάτα εδώ για να διαλέξεις μουσική",
+      dzMusicSubtitle: "Έως 30 κομμάτια",
+      musicListHeading: "Τα κομμάτια σου",
+      musicEmptyNote: "Δεν έχεις προσθέσει μουσική ακόμα.",
+      shuffleLabel: "Τυχαία αναπαραγωγή",
+      noTrackPlaying: "Καμία μουσική",
+      nowPlaying: "Παίζει: {name}",
+      sfxSummary: "Ήχοι κάρτας",
+      sfxInstructions: "Βάλε τους δικούς σου ήχους για όταν γυρίζεις μια κάρτα και όταν βρίσκεις ζευγάρι — αλλιώς χρησιμοποιούνται οι προεπιλεγμένοι.",
+      sfxFlipLabel: "Ήχος όταν γυρίζεις κάρτα",
+      sfxMatchLabel: "Ήχος όταν βρίσκεις ζευγάρι",
+      dzSoundTitle: "Πάτα εδώ για να διαλέξεις ήχο",
+      sfxUsingCustom: "Χρησιμοποιείται: {name}",
+      sfxUsingDefault: "Χρησιμοποιείται ο προεπιλεγμένος ήχος.",
+      sfxRemoveBtnLabel: "Αφαίρεση, επιστροφή στον προεπιλεγμένο",
+      appearanceSummary: "Χρώματα του παιχνιδιού",
+      appearanceInstructions: "Διάλεξε τα δικά σου χρώματα — το παιχνίδι θα τα θυμάται από εδώ και πέρα, σε αυτό το Mac.",
+      colorBgLabel: "Φόντο σελίδας",
+      colorPanelLabel: "Φόντο καρτών/πλαισίων",
+      colorInkLabel: "Χρώμα γραμμάτων",
+      colorAccentLabel: "Κύριο χρώμα (κουμπιά)",
+      colorAccent2Label: "Δεύτερο χρώμα (επιλογές)",
+      resetColorsBtnLabel: "Επαναφορά προεπιλογών",
+      statMovesLbl: "Κινήσεις",
+      statPairsLbl: "Ζευγάρια",
+      backToMenuBtnLabel: "← Αλλαγή ρυθμίσεων",
+      winTitle: "Μπράβο! 🎉",
+      winStatsTemplate: "{moves} κινήσεις.",
+      bestNoteLabel: "✨ Νέο προσωπικό ρεκόρ!",
+      playAgainBtnLabel: "Παίξε ξανά",
+      changeModeBtnLabel: "Αλλαγή λειτουργίας",
+      settingsTitle: "Ρυθμίσεις",
+      photosBuilderSummary: "Νέο πακέτο φωτογραφιών",
+      activeSymbolsLabel: "Σύμβολα: {name}",
+      defaultPackName: "Βασικά",
+      helpTitle: "Πώς παίζεται",
+      helpBody: "Γύρνα δύο κάρτες πατώντας πάνω τους. Αν ταιριάζουν, μένουν ανοιχτές. Αν όχι, ξαναγυρίζουν — προσπάθησε να θυμηθείς πού ήταν για την επόμενη φορά. Σκοπός: να βρεις όλα τα ζευγάρια! Πάτα το ⚙️ πάνω δεξιά όποτε θες να αλλάξεις κάτι — χρώματα, φωτογραφίες, μουσική, σύμβολα.",
+      closeHelpBtnLabel: "Το κατάλαβα!",
+      themeToggleAria: "Εναλλαγή φωτεινού/σκοτεινού θέματος",
+      soundToggleAriaOn: "Απενεργοποίηση ήχων",
+      soundToggleAriaOff: "Ενεργοποίηση ήχων",
+      musicToggleAriaPlay: "Αναπαραγωγή μουσικής",
+      musicToggleAriaPause: "Παύση μουσικής",
+      langToggleAria: "Αλλαγή γλώσσας σε Αγγλικά",
+      cardAria: "Κάρτα {n}"
+    },
+    en: {
+      appTitle: "Memory & Wisdom",
+      pageSubtitle: "A memory game that becomes a moment of reflection — play with symbols or with your own photos.",
+      tabClassicLabel: "Classic",
+      tabPhotosLabel: "My Photos",
+      tabPuzzleLabel: "Puzzle",
+      tabHanoiLabel: "Tower of Hanoi",
+      classicDiffHeading: "Choose difficulty",
+      classicPacksHeading: "Which symbols?",
+      backupIconPacksIntro: "Keep your packs in a file of your own, so they're never lost again — save it to Files, or email it to yourself.",
+      exportIconPacksBtnLabel: "Download backup",
+      importIconPacksBtnLabel: "Restore from file",
+      backupExportDoneNote: "The file downloaded — keep it somewhere safe.",
+      backupExportEmptyNote: "You don't have any packs saved yet.",
+      backupImportDoneNote: "Done! Restored {n} packs.",
+      backupImportErrorNote: "That file wasn't recognized — make sure it's a backup file from this game.",
+      diffEasy: "Easy",
+      diffMedium: "Medium",
+      diffHard: "Hard",
+      diffVEasy: "Very Easy",
+      diffAdvanced: "Advanced",
+      diffVHard: "Very Hard",
+      diffPairsLabel: "{label} ({n} pairs)",
+      startGameBtn: "Start the game",
+      photosIntro: "Your photo packs stay saved in this browser, on this Mac — no need to re-upload them every time.",
+      packNameLabel: "Pack name",
+      packNamePlaceholder: "e.g. Helen",
+      dzPhotosTitle: "Tap here to choose photos",
+      dzPhotosSubtitle: "Up to 100 photos at a time",
+      addToPackBtnLabel: "Add to pack",
+      packsHeading: "Your packs",
+      packsEmptyNote: "You haven't created any packs yet — open Settings ⚙️ to make one.",
+      packsUnavailableNote: "Pack storage isn't available in this browser.",
+      packSaveErrorNote: "Something went wrong while saving. Please try again.",
+      existingPackPhotosLabel: "Photos in this pack — tap the ones you want to delete (their border lights up):",
+      deleteSelectedBtnLabel: "Delete selected ({n})",
+      selectedPackLabel: "Selected pack: {name}",
+      packChipLabel: "{name} ({count})",
+      roundSizeHeading: "How many pairs this round?",
+      roundSizeNote: "Each time you play, they're chosen randomly from the pack — so you get variety.",
+      pairsCount: "{n} pairs",
+      needAtLeast4: "You need at least 4 photos (you have {n}).",
+      willAdd: "{n} photos will be added to the pack.",
+      puzzleIntro: "Pick one of your packs, then a photo from it — we'll cut it into 16 pieces and shuffle them. Tap two pieces to swap them, until you rebuild the picture.",
+      puzzlePacksHeading: "Your packs",
+      puzzleChoosePhotoHeading: "Choose a photo (tap it to select, or pick more than one to delete them)",
+      puzzleSizeHeading: "How big a puzzle?",
+      puzzleSizeValueLabel: "{n} × {n}",
+      startPuzzleBtnLabel: "Start the puzzle",
+      puzzleTargetLabel: "Target",
+      resetPuzzleBtnLabel: "Solve the puzzle",
+      pagerLabel: "Page {page} of {total}",
+      pagerPrevAria: "Previous page",
+      pagerNextAria: "Next page",
+      hanoiIntro: "Goal: move all the discs from the first base to the last one, one at a time. Never a bigger disc on a smaller one.",
+      hanoiDiscsHeading: "How many discs?",
+      hanoiDiscsCountLabel: "{n} discs",
+      startHanoiBtnLabel: "Start the game",
+      hanoiMinMovesLbl: "Fewest possible",
+      hanoiPegAria: "Base {n}",
+      resetHanoiBtnLabel: "Start over",
+      puzzlePackSummaryLabel: "Pack: {name}",
+      puzzlePhotoSummaryLabel: "Photo selected",
+      changeBtnLabel: "Change",
+      helpMenuClassicLabel: "Classic Cards",
+      helpMenuPhotosLabel: "Photo Cards",
+      helpMenuPuzzleLabel: "Puzzle",
+      helpMenuHanoiLabel: "Tower of Hanoi",
+      helpBodyPhotos: "Flip two cards by tapping them. If they match, they stay open. If not, they flip back — try to remember where they were. Here the cards are your own photos: pick or create a pack from Settings ⚙️ before you start. Goal: find all the pairs!",
+      helpBodyPuzzle: "Pick one of your packs, then a photo from it — we'll cut it into pieces and shuffle them. Tap two pieces to swap them, until you rebuild the picture. If you get stuck, the \"Solve the puzzle\" button shows you the finished picture right away.",
+      helpBodyHanoi: "The goal is to move all the discs from the first base to the last one. Tap a base to pick up its top disc, then tap another base to place it there. You can only place a disc on a bigger one, never on a smaller one.",
+      fileTypeNotRecognized: "File type wasn't recognized. Try again or choose a different file.",
+      processingPhotos: "Processing {n} photos, one moment...",
+      optimizePhotosBtnLabel: "Speed up older photos",
+      optimizePhotosIntro: "If you added photos before, tap this once to make them lighter — the game will run faster.",
+      optimizingPhotosNote: "Optimizing photos... {done}/{total}",
+      optimizePhotosDoneNote: "Done! Optimized {n} photos.",
+      optimizePhotosNoneNote: "All your photos are already fast.",
+      backupPhotosIntro: "Keep all your photo packs in a file of your own, so they're never lost again. With a lot of photos, the download may take a moment and the file may be large — that's normal.",
+      exportPhotosBtnLabel: "Download backup",
+      importPhotosBtnLabel: "Restore from file",
+      backupPhotosExportEmptyNote: "You don't have any photos saved yet.",
+      backupPhotosExportProgress: "Preparing backup... {done}/{total}",
+      backupPhotosExportDoneNote: "The file downloaded — keep it somewhere safe.",
+      backupPhotosImportProgress: "Restoring... {done}/{total}",
+      backupPhotosImportDoneNote: "Done! Restored {n} photos.",
+      backupPhotosImportErrorNote: "That file wasn't recognized — make sure it's a photo backup file from this game.",
+      symbolsSummary: "Classic Symbols",
+      symbolsInstructions: "On your Mac, press Control + Command + Space to open the emoji picker — find what you like and double-click to copy it. You can also type words instead of symbols — one word per line, or separated by commas. Make named packs, and choose which one to use in Classic mode. To delete a pack, tap the red × next to it (it turns red) and then tap \"Delete selected\".",
+      iconPackNameLabel: "Symbol pack name",
+      iconPackNamePlaceholder: "e.g. Animals",
+      customIconsPlaceholder: "🦋 🐢 🦉 🌸 ...  or words: PATIENCE, PEACE, JOY",
+      saveIconPackBtnLabel: "Save pack",
+      iconPacksHeading: "Your symbol packs",
+      iconPacksEmptyNote: "Using the default symbol set. Create your first pack above.",
+      iconPackSymbolsLabel: "Symbols in this pack — tap one to delete it:",
+      iconPackNeedName: "Write a pack name first.",
+      iconPackNeedMore: "You need at least 6 symbols (you have {n}).",
+      iconsPreviewLabel: "{n} symbols: {list}",
+      quotesSummary: "Sayings shown in the game",
+      quotesInstructions: "Some are ancient, well-known Delphic sayings. The rest I wrote just for this game, in the spirit of InnerLife. If you like, write your own here — one per line — or load a .txt file. Yours will show instead of mine, one at random each time.",
+      customQuotesPlaceholder: "One thought per line...",
+      quotesFileLabel: "Load a .txt file",
+      loadQuotesBtnLabel: "Load the 44 sayings here to edit them",
+      addQuoteBtnLabel: "Add",
+      newQuotePlaceholder: "Write a new saying...",
+      musicSummary: "Music",
+      musicInstructions: "Upload your own tracks — they'll play in order while you play, unless you turn on shuffle.",
+      dzMusicTitle: "Tap here to choose music",
+      dzMusicSubtitle: "Up to 30 tracks",
+      musicListHeading: "Your tracks",
+      musicEmptyNote: "You haven't added any music yet.",
+      shuffleLabel: "Shuffle",
+      noTrackPlaying: "No music",
+      nowPlaying: "Playing: {name}",
+      sfxSummary: "Card Sounds",
+      sfxInstructions: "Add your own sounds for flipping a card and for finding a pair — otherwise the built-in ones are used.",
+      sfxFlipLabel: "Sound when you flip a card",
+      sfxMatchLabel: "Sound when you find a pair",
+      dzSoundTitle: "Tap here to choose a sound",
+      sfxUsingCustom: "Using: {name}",
+      sfxUsingDefault: "Using the built-in sound.",
+      sfxRemoveBtnLabel: "Remove, go back to default",
+      appearanceSummary: "Game colors",
+      appearanceInstructions: "Choose your own colors — the game will remember them from now on, on this Mac.",
+      colorBgLabel: "Page background",
+      colorPanelLabel: "Cards/panels background",
+      colorInkLabel: "Text color",
+      colorAccentLabel: "Main color (buttons)",
+      colorAccent2Label: "Secondary color (selections)",
+      resetColorsBtnLabel: "Reset to defaults",
+      statMovesLbl: "Moves",
+      statPairsLbl: "Pairs",
+      backToMenuBtnLabel: "← Change settings",
+      winTitle: "Well done! 🎉",
+      winStatsTemplate: "{moves} moves.",
+      bestNoteLabel: "✨ New personal best!",
+      playAgainBtnLabel: "Play again",
+      changeModeBtnLabel: "Change mode",
+      settingsTitle: "Settings",
+      photosBuilderSummary: "New photo pack",
+      activeSymbolsLabel: "Symbols: {name}",
+      defaultPackName: "Default",
+      helpTitle: "How to play",
+      helpBody: "Flip two cards by tapping them. If they match, they stay open. If not, they flip back — try to remember where they were for next time. Goal: find all the pairs! Tap ⚙️ up top whenever you want to change something — colors, photos, music, symbols.",
+      closeHelpBtnLabel: "Got it!",
+      themeToggleAria: "Toggle light/dark theme",
+      soundToggleAriaOn: "Turn off sounds",
+      soundToggleAriaOff: "Turn on sounds",
+      musicToggleAriaPlay: "Play music",
+      musicToggleAriaPause: "Pause music",
+      langToggleAria: "Switch language to Greek",
+      cardAria: "Card {n}"
+    }
+  };
+
+  var DEFAULT_QUOTES = {
+    el: [
+      "Γνώθι σαυτόν.",
+      "Μηδέν άγαν.",
+      "Μέτρον άριστον.",
+      "Η μνήμη είναι ένας κήπος· ό,τι ποτίζεις, αυτό ανθίζει.",
+      "Κάθε ανάμνηση που ξαναζείς, σε φέρνει λίγο πιο κοντά στον εαυτό σου.",
+      "Δεν θυμόμαστε τις μέρες, θυμόμαστε τις στιγμές.",
+      "Το να θυμάσαι είναι μια μορφή αγάπης.",
+      "Ο νους που γυμνάζεται, δεν γερνάει — ανθίζει.",
+      "Κάθε ζευγάρι που βρίσκεις είναι μια μικρή νίκη της προσοχής.",
+      "Η υπομονή είναι η μητέρα της μνήμης.",
+      "Στο βάθος κάθε ανάμνησης κρύβεται ένα μάθημα.",
+      "Δεν αγωνιζόμαστε ενάντια στον χρόνο· τον τιμάμε.",
+      "Η σοφία δεν είναι να θυμάσαι τα πάντα, αλλά να εκτιμάς αυτά που θυμάσαι.",
+      "Μια ήρεμη ανάσα βοηθά τον νου να θυμηθεί.",
+      "Η αλλαγή ξεκινά με ένα μικρό, σταθερό βήμα.",
+      "Δεν χρειάζεται να είσαι τέλειος, αρκεί να είσαι ειλικρινής με τον εαυτό σου.",
+      "Η ευγνωμοσύνη μετατρέπει το λίγο σε αρκετό.",
+      "Κάθε δυσκολία κρύβει μέσα της ένα μάθημα, αν έχεις την υπομονή να το δεις.",
+      "Το θάρρος δεν είναι απουσία φόβου, είναι το βήμα παρά τον φόβο.",
+      "Η καλοσύνη είναι μια γλώσσα που όλοι καταλαβαίνουν.",
+      "Ο εαυτός σου του αύριο χτίζεται από τις επιλογές σου σήμερα.",
+      "Η ηρεμία δεν είναι απουσία θύελλας, είναι ειρήνη μέσα σε αυτήν.",
+      "Να είσαι υπομονετικός με τον εαυτό σου· μεγαλώνεις ακόμα.",
+      "Η αληθινή δύναμη είναι η καλοσύνη όταν θα ήταν πιο εύκολο να μην είσαι.",
+      "Οι ρίζες δίνουν δύναμη στα κλαδιά να μεγαλώσουν ψηλά.",
+      "Ένα ευχαριστώ ειλικρινές αξίζει περισσότερο από χίλια λόγια.",
+      "Η πρόοδος δεν είναι πάντα ευθεία γραμμή — και αυτό είναι εντάξει.",
+      "Το να ακούς είναι μια από τις πιο σπάνιες μορφές γενναιοδωρίας.",
+      "Η σιωπή, μερικές φορές, είναι η πιο σοφή απάντηση.",
+      "Δεν χρειάζεται να τρέξεις — αρκεί να μην σταματήσεις.",
+      "Η αυτογνωσία είναι το πρώτο βήμα προς κάθε αλλαγή.",
+      "Ένα ζεστό χαμόγελο μπορεί να αλλάξει τη μέρα κάποιου.",
+      "Η ζωή δεν μετριέται σε χρόνια, αλλά σε στιγμές που άξιζαν.",
+      "Ο σεβασμός προς τον εαυτό σου είναι η βάση για κάθε άλλη σχέση.",
+      "Η ευτυχία συχνά κρύβεται στα απλά πράγματα που προσπερνάμε.",
+      "Δεν είσαι τα λάθη σου· είσαι αυτό που μαθαίνεις από αυτά.",
+      "Η γενναιοδωρία δεν μετριέται από το πόσο δίνεις, αλλά από το πόσο νοιάζεσαι.",
+      "Ένα βήμα πίσω, μερικές φορές, είναι προετοιμασία για δύο μπροστά.",
+      "Η ελπίδα είναι το φως που κρατάμε όταν όλα τα άλλα σβήνουν.",
+      "Το να συγχωρείς δεν είναι αδυναμία — είναι απελευθέρωση.",
+      "Η σοφία έρχεται όχι από το τι ξέρεις, αλλά από το πώς ζεις αυτό που ξέρεις.",
+      "Το παρόν είναι το μόνο μέρος όπου η ζωή πραγματικά συμβαίνει.",
+      "Η αληθινή ομορφιά είναι στο πώς φέρεσαι, όχι στο πώς φαίνεσαι.",
+      "Ό,τι φροντίζεις με αγάπη, ανθίζει — και οι σχέσεις, και ο εαυτός σου."
+    ],
+    en: [
+      "Know thyself.",
+      "Nothing in excess.",
+      "Moderation is best.",
+      "Memory is a garden; what you water, blooms.",
+      "Every memory you relive brings you a little closer to yourself.",
+      "We don't remember days, we remember moments.",
+      "To remember is a form of love.",
+      "A mind that exercises doesn't age — it blooms.",
+      "Every pair you find is a small victory of attention.",
+      "Patience is the mother of memory.",
+      "Within every memory lies a lesson.",
+      "We don't fight against time; we honor it.",
+      "Wisdom isn't remembering everything, but cherishing what you remember.",
+      "A calm breath helps the mind remember.",
+      "Change begins with one small, steady step.",
+      "You don't need to be perfect, just honest with yourself.",
+      "Gratitude turns little into enough.",
+      "Every difficulty holds a lesson, if you have the patience to see it.",
+      "Courage isn't the absence of fear, it's moving forward despite it.",
+      "Kindness is a language everyone understands.",
+      "Tomorrow's self is built from today's choices.",
+      "Calm isn't the absence of the storm, it's peace within it.",
+      "Be patient with yourself; you're still growing.",
+      "True strength is kindness when it would be easier not to be.",
+      "Roots give branches the strength to grow tall.",
+      "A sincere thank you is worth more than a thousand words.",
+      "Progress isn't always a straight line — and that's alright.",
+      "Listening is one of the rarest forms of generosity.",
+      "Silence, sometimes, is the wisest answer.",
+      "You don't need to run — just don't stop.",
+      "Self-awareness is the first step toward any change.",
+      "A warm smile can change someone's whole day.",
+      "Life isn't measured in years, but in moments that mattered.",
+      "Respecting yourself is the foundation for every other relationship.",
+      "Happiness often hides in the simple things we rush past.",
+      "You are not your mistakes; you are what you learn from them.",
+      "Generosity isn't measured by how much you give, but how much you care.",
+      "A step back, sometimes, is preparation for two steps forward.",
+      "Hope is the light we hold onto when everything else dims.",
+      "Forgiving isn't weakness — it's freedom.",
+      "Wisdom comes not from what you know, but from how you live it.",
+      "The present is the only place where life actually happens.",
+      "True beauty is in how you treat others, not how you look.",
+      "Whatever you tend with love blooms — relationships, and yourself too."
+    ]
+  };
+
+  var currentLang = 'el';
+  try {
+    var savedLang = localStorage.getItem('mw_lang');
+    if (savedLang === 'el' || savedLang === 'en') currentLang = savedLang;
+  } catch (e) {}
+
+  function t(key, vars) {
+    var dict = TRANSLATIONS[currentLang] || TRANSLATIONS.el;
+    var str = dict[key] !== undefined ? dict[key] : (TRANSLATIONS.el[key] !== undefined ? TRANSLATIONS.el[key] : key);
+    if (vars) {
+      Object.keys(vars).forEach(function (k) {
+        str = str.split('{' + k + '}').join(vars[k]);
+      });
+    }
+    return str;
+  }
+
+  /* =========================================================
+     THEME TOGGLE
+  ========================================================= */
+  var themeToggle = document.getElementById('themeToggle');
+  try {
+    var savedTheme = localStorage.getItem('mw_theme');
+    if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+  } catch (e) {}
+  themeToggle.addEventListener('click', function () {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next;
+    if (current === 'dark') next = 'light';
+    else if (current === 'light') next = 'dark';
+    else {
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      next = prefersDark ? 'light' : 'dark';
+    }
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('mw_theme', next); } catch (e) {}
+  });
+
+  /* =========================================================
+     SETTINGS & HELP MODALS
+  ========================================================= */
+  var settingsToggle = document.getElementById('settingsToggle');
+  var settingsOverlay = document.getElementById('settingsOverlay');
+  var closeSettingsBtn = document.getElementById('closeSettingsBtn');
+  var settingsBackBtn = document.getElementById('settingsBackBtn');
+  var settingsMenu = document.getElementById('settingsMenu');
+  var SETTINGS_SECTIONS = ['Photos', 'Symbols', 'Quotes', 'Music', 'Sfx', 'Colors'];
+  function showSettingsMenu() {
+    settingsMenu.classList.remove('hidden');
+    SETTINGS_SECTIONS.forEach(function (s) { document.getElementById('settingsSection' + s).classList.add('hidden'); });
+    settingsBackBtn.classList.add('hidden');
+  }
+  function showSettingsSection(name) {
+    settingsMenu.classList.add('hidden');
+    SETTINGS_SECTIONS.forEach(function (s) { document.getElementById('settingsSection' + s).classList.toggle('hidden', s !== name); });
+    settingsBackBtn.classList.remove('hidden');
+  }
+  document.getElementById('menuPhotosBtn').addEventListener('click', function () { showSettingsSection('Photos'); });
+  document.getElementById('menuSymbolsBtn').addEventListener('click', function () { showSettingsSection('Symbols'); });
+  document.getElementById('menuQuotesBtn').addEventListener('click', function () { showSettingsSection('Quotes'); });
+  document.getElementById('menuMusicBtn').addEventListener('click', function () { showSettingsSection('Music'); });
+  document.getElementById('menuSfxBtn').addEventListener('click', function () { showSettingsSection('Sfx'); });
+  document.getElementById('menuColorsBtn').addEventListener('click', function () { showSettingsSection('Colors'); });
+  settingsBackBtn.addEventListener('click', showSettingsMenu);
+  settingsToggle.addEventListener('click', function () { showSettingsMenu(); settingsOverlay.classList.remove('hidden'); });
+  closeSettingsBtn.addEventListener('click', function () { settingsOverlay.classList.add('hidden'); });
+  settingsOverlay.addEventListener('click', function (e) { if (e.target === settingsOverlay) settingsOverlay.classList.add('hidden'); });
+
+  var helpToggle = document.getElementById('helpToggle');
+  var helpOverlay = document.getElementById('helpOverlay');
+  var closeHelpBtn = document.getElementById('closeHelpBtn');
+  var HELP_SECTIONS = ['Classic', 'Photos', 'Puzzle', 'Hanoi'];
+  var HELP_BODY_KEY = { Classic: 'helpBody', Photos: 'helpBodyPhotos', Puzzle: 'helpBodyPuzzle', Hanoi: 'helpBodyHanoi' };
+  var MODE_TO_HELP = { classic: 'Classic', photos: 'Photos', puzzle: 'Puzzle', hanoi: 'Hanoi' };
+  var currentHelpSection = 'Classic';
+  function renderHelpBody() {
+    var helpBodyEl = document.getElementById('helpBody');
+    if (helpBodyEl) helpBodyEl.textContent = t(HELP_BODY_KEY[currentHelpSection]);
+    HELP_SECTIONS.forEach(function (s) {
+      var btn = document.getElementById('helpMenu' + s);
+      if (btn) btn.setAttribute('aria-pressed', s === currentHelpSection ? 'true' : 'false');
+    });
+  }
+  function selectHelpSection(name) {
+    currentHelpSection = name;
+    renderHelpBody();
+  }
+  HELP_SECTIONS.forEach(function (s) {
+    var btn = document.getElementById('helpMenu' + s);
+    if (btn) btn.addEventListener('click', function () { selectHelpSection(s); });
+  });
+  function openHelp() {
+    currentHelpSection = MODE_TO_HELP[typeof currentMode !== 'undefined' ? currentMode : 'classic'] || 'Classic';
+    renderHelpBody();
+    helpOverlay.classList.remove('hidden');
+  }
+  function closeHelp() {
+    helpOverlay.classList.add('hidden');
+    try { localStorage.setItem('mw_seen_intro', '1'); } catch (e) {}
+  }
+  helpToggle.addEventListener('click', openHelp);
+  closeHelpBtn.addEventListener('click', closeHelp);
+  helpOverlay.addEventListener('click', function (e) { if (e.target === helpOverlay) closeHelp(); });
+  try {
+    if (!localStorage.getItem('mw_seen_intro')) openHelp();
+  } catch (e) {}
+
+  /* =========================================================
+     DRAGGABLE WIN CARD (so it can be moved aside to see the picture)
+  ========================================================= */
+  var winCardEl = document.getElementById('winCard');
+  (function enableWinCardDragging(el) {
+    var offsetX = 0, offsetY = 0, startX = 0, startY = 0, dragging = false;
+    function point(e) { return e.touches ? e.touches[0] : e; }
+    function onDown(e) {
+      if (e.target.closest && e.target.closest('button')) return;
+      dragging = true;
+      var p = point(e);
+      startX = p.clientX - offsetX;
+      startY = p.clientY - offsetY;
+      el.style.transition = 'none';
+      el.style.cursor = 'grabbing';
+      if (e.cancelable) e.preventDefault();
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      var p = point(e);
+      offsetX = p.clientX - startX;
+      offsetY = p.clientY - startY;
+      el.style.transform = 'translate(' + offsetX + 'px,' + offsetY + 'px)';
+      if (e.cancelable) e.preventDefault();
+    }
+    function onUp() { dragging = false; el.style.cursor = 'grab'; }
+    el.addEventListener('mousedown', onDown);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+    el.addEventListener('touchstart', onDown, { passive: false });
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('touchend', onUp);
+    el.resetDragPosition = function () {
+      offsetX = 0; offsetY = 0;
+      el.style.transform = 'translate(0,0)';
+    };
+  })(winCardEl);
+  function resetWinCardPosition() {
+    if (winCardEl && winCardEl.resetDragPosition) winCardEl.resetDragPosition();
+  }
+
+  /* =========================================================
+     RESPONSIVE BOARD SIZING
+     Shrinks the little squares (cards/tiles) so the whole game —
+     stats, board and the bottom buttons — fits on one screen,
+     on any phone, at any difficulty.
+  ========================================================= */
+  function debounce(fn, wait) {
+    var timer = null;
+    return function () {
+      var args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () { fn.apply(null, args); }, wait);
+    };
+  }
+  function fitBoardToScreen(boardEl, cols, rows, gapPx, reserveEls, maxCell, minCell) {
+    var vh = window.innerHeight;
+    var vw = window.innerWidth;
+    var reserved = 0;
+    reserveEls.forEach(function (el) { if (el) reserved += el.getBoundingClientRect().height; });
+    var wrapEl = document.querySelector('.wrap');
+    if (wrapEl) {
+      var cs = getComputedStyle(wrapEl);
+      reserved += parseFloat(cs.paddingTop || 0) + parseFloat(cs.paddingBottom || 0);
+    }
+    var availH = Math.max(150, vh - reserved - 30);
+    var availW = vw * 0.94;
+    var cellFromW = (availW - gapPx * (cols - 1)) / cols;
+    var cellFromH = (availH - gapPx * (rows - 1)) / rows;
+    var cell = Math.max(minCell || 16, Math.min(cellFromW, cellFromH, maxCell || 130));
+    var width = cell * cols + gapPx * (cols - 1);
+    boardEl.style.width = width + 'px';
+    boardEl.style.maxWidth = width + 'px';
+    return width;
+  }
+  var activeBoardResize = null;
+  window.addEventListener('resize', debounce(function () {
+    if (activeBoardResize) activeBoardResize();
+  }, 150));
+
+  /* =========================================================
+     PAGINATION HELPER
+     Keeps long lists (many photo packs, many photos) from
+     pushing the "start game" button off the screen — shown a
+     handful at a time with "Page X of Y" instead.
+  ========================================================= */
+  function createPager(containerEl, pagerEl, pageSize) {
+    var state = { page: 0, items: [], renderItem: null };
+    function totalPages() { return Math.max(1, Math.ceil(state.items.length / pageSize)); }
+    function renderPager() {
+      pagerEl.innerHTML = '';
+      var tp = totalPages();
+      if (state.items.length <= pageSize) { pagerEl.classList.add('hidden'); return; }
+      pagerEl.classList.remove('hidden');
+      var prev = document.createElement('button');
+      prev.type = 'button'; prev.className = 'pager-btn'; prev.textContent = '‹';
+      prev.setAttribute('aria-label', t('pagerPrevAria'));
+      prev.disabled = state.page === 0;
+      prev.addEventListener('click', function () { state.page--; renderPage(); });
+      var label = document.createElement('div');
+      label.className = 'pager-label';
+      label.textContent = t('pagerLabel', { page: state.page + 1, total: tp });
+      var next = document.createElement('button');
+      next.type = 'button'; next.className = 'pager-btn'; next.textContent = '›';
+      next.setAttribute('aria-label', t('pagerNextAria'));
+      next.disabled = state.page >= tp - 1;
+      next.addEventListener('click', function () { state.page++; renderPage(); });
+      pagerEl.appendChild(prev); pagerEl.appendChild(label); pagerEl.appendChild(next);
+    }
+    function renderPage() {
+      var tp = totalPages();
+      if (state.page >= tp) state.page = tp - 1;
+      if (state.page < 0) state.page = 0;
+      containerEl.innerHTML = '';
+      var start = state.page * pageSize;
+      state.items.slice(start, start + pageSize).forEach(function (item) {
+        containerEl.appendChild(state.renderItem(item));
+      });
+      renderPager();
+    }
+    return {
+      setItems: function (items, renderItem, keepPage) {
+        state.items = items;
+        state.renderItem = renderItem;
+        if (!keepPage) state.page = 0;
+        renderPage();
+      },
+      refresh: renderPage
+    };
+  }
+
+  /* =========================================================
+     SOUND EFFECTS (synthesized, no files needed)
+  ========================================================= */
+  var soundOn = true;
+  try {
+    var savedSound = localStorage.getItem('mw_sound_on');
+    if (savedSound !== null) soundOn = savedSound === '1';
+  } catch (e) {}
+  var audioCtx = null;
+  var masterCompressor = null;
+  function getAudioCtx() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        audioCtx = new AC();
+        masterCompressor = audioCtx.createDynamicsCompressor();
+        masterCompressor.threshold.value = -18;
+        masterCompressor.knee.value = 24;
+        masterCompressor.ratio.value = 8;
+        masterCompressor.attack.value = 0.002;
+        masterCompressor.release.value = 0.15;
+        masterCompressor.connect(audioCtx.destination);
+      }
+    }
+    return audioCtx;
+  }
+  function playTone(freq, duration, startOffset, gainPeak) {
+    if (!soundOn) return;
+    try {
+      var ctx = getAudioCtx();
+      if (!ctx) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      var t0 = ctx.currentTime + (startOffset || 0);
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.linearRampToValueAtTime(gainPeak || 0.1, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + duration);
+      osc.connect(gain);
+      gain.connect(masterCompressor);
+      osc.start(t0);
+      osc.stop(t0 + duration + 0.05);
+    } catch (e) {}
+  }
+  function playFlipSound() {
+    if (!soundOn) return;
+    if (customFlipLoaded) { try { customFlipAudio.currentTime = 0; customFlipAudio.play().catch(function () {}); } catch (e) {} return; }
+    playTone(480, 0.11, 0, 1.1);
+  }
+  function playMatchSound() {
+    if (!soundOn) return;
+    if (customMatchLoaded) { try { customMatchAudio.currentTime = 0; customMatchAudio.play().catch(function () {}); } catch (e) {} return; }
+    playTone(660, 0.18, 0, 1.4); playTone(880, 0.24, 0.1, 1.4);
+  }
+  function playMismatchSound() { playTone(220, 0.2, 0, 1.0); }
+
+  var customFlipAudio = new Audio();
+  var customMatchAudio = new Audio();
+  var customFlipLoaded = false;
+  var customMatchLoaded = false;
+  var sfxFlipDropzone = document.getElementById('sfxFlipDropzone');
+  var sfxFlipInput = document.getElementById('sfxFlipInput');
+  var sfxFlipStatus = document.getElementById('sfxFlipStatus');
+  var sfxFlipRemoveBtn = document.getElementById('sfxFlipRemoveBtn');
+  var sfxMatchDropzone = document.getElementById('sfxMatchDropzone');
+  var sfxMatchInput = document.getElementById('sfxMatchInput');
+  var sfxMatchStatus = document.getElementById('sfxMatchStatus');
+  var sfxMatchRemoveBtn = document.getElementById('sfxMatchRemoveBtn');
+
+  function refreshSfxStatusUI() {
+    sfxFlipStatus.textContent = customFlipLoaded ? t('sfxUsingCustom', { name: customFlipAudio.dataset.name || '' }) : t('sfxUsingDefault');
+    sfxFlipRemoveBtn.classList.toggle('hidden', !customFlipLoaded);
+    sfxMatchStatus.textContent = customMatchLoaded ? t('sfxUsingCustom', { name: customMatchAudio.dataset.name || '' }) : t('sfxUsingDefault');
+    sfxMatchRemoveBtn.classList.toggle('hidden', !customMatchLoaded);
+  }
+  function loadCustomSfx() {
+    getSfxBlob('flip').then(function (rec) {
+      if (rec) {
+        customFlipAudio.src = URL.createObjectURL(rec.blob);
+        customFlipAudio.dataset.name = rec.blob.name || '';
+        customFlipLoaded = true;
+      } else { customFlipLoaded = false; }
+      refreshSfxStatusUI();
+    }).catch(function () { customFlipLoaded = false; refreshSfxStatusUI(); });
+    getSfxBlob('match').then(function (rec) {
+      if (rec) {
+        customMatchAudio.src = URL.createObjectURL(rec.blob);
+        customMatchAudio.dataset.name = rec.blob.name || '';
+        customMatchLoaded = true;
+      } else { customMatchLoaded = false; }
+      refreshSfxStatusUI();
+    }).catch(function () { customMatchLoaded = false; refreshSfxStatusUI(); });
+  }
+  sfxFlipDropzone.addEventListener('click', function () { sfxFlipInput.click(); });
+  sfxFlipDropzone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sfxFlipInput.click(); } });
+  sfxFlipInput.addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f || !looksLikeAudio(f)) { sfxFlipInput.value = ''; return; }
+    setSfxBlob('flip', f).then(loadCustomSfx);
+    sfxFlipInput.value = '';
+  });
+  sfxFlipRemoveBtn.addEventListener('click', function () { deleteSfxBlob('flip').then(loadCustomSfx); });
+  sfxMatchDropzone.addEventListener('click', function () { sfxMatchInput.click(); });
+  sfxMatchDropzone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sfxMatchInput.click(); } });
+  sfxMatchInput.addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f || !looksLikeAudio(f)) { sfxMatchInput.value = ''; return; }
+    setSfxBlob('match', f).then(loadCustomSfx);
+    sfxMatchInput.value = '';
+  });
+  sfxMatchRemoveBtn.addEventListener('click', function () { deleteSfxBlob('match').then(loadCustomSfx); });
+  loadCustomSfx();
+
+  var soundToggle = document.getElementById('soundToggle');
+  function updateSoundToggleUI() {
+    soundToggle.textContent = soundOn ? '🔊' : '🔇';
+    soundToggle.setAttribute('aria-label', t(soundOn ? 'soundToggleAriaOn' : 'soundToggleAriaOff'));
+  }
+  soundToggle.addEventListener('click', function () {
+    soundOn = !soundOn;
+    try { localStorage.setItem('mw_sound_on', soundOn ? '1' : '0'); } catch (e) {}
+    updateSoundToggleUI();
+  });
+
+  /* =========================================================
+     LANGUAGE TOGGLE
+  ========================================================= */
+  var langToggle = document.getElementById('langToggle');
+  langToggle.addEventListener('click', function () {
+    currentLang = currentLang === 'el' ? 'en' : 'el';
+    try { localStorage.setItem('mw_lang', currentLang); } catch (e) {}
+    applyTranslations();
+  });
+
+  /* =========================================================
+     CUSTOM COLORS
+  ========================================================= */
+  var COLOR_MAP = { colorBg: '--bg', colorPanel: '--panel', colorInk: '--ink', colorAccent: '--gold-strong', colorAccent2: '--terracotta' };
+  var DEFAULT_COLOR_VALUES = { colorBg: '#EDE6D6', colorPanel: '#F6F1E4', colorInk: '#2B2118', colorAccent: '#8C6A22', colorAccent2: '#B5624A' };
+  function saveAndApplyColor(inputId) {
+    var el = document.getElementById(inputId);
+    var cssVar = COLOR_MAP[inputId];
+    if (!el || !cssVar) return;
+    document.documentElement.style.setProperty(cssVar, el.value);
+    try {
+      var raw = localStorage.getItem('mw_custom_colors');
+      var saved = raw ? JSON.parse(raw) : {};
+      saved[inputId] = el.value;
+      localStorage.setItem('mw_custom_colors', JSON.stringify(saved));
+    } catch (e) {}
+  }
+  function loadCustomColors() {
+    try {
+      var raw = localStorage.getItem('mw_custom_colors');
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      Object.keys(saved).forEach(function (inputId) {
+        var el = document.getElementById(inputId);
+        var cssVar = COLOR_MAP[inputId];
+        if (el) el.value = saved[inputId];
+        if (cssVar) document.documentElement.style.setProperty(cssVar, saved[inputId]);
+      });
+    } catch (e) {}
+  }
+  Object.keys(COLOR_MAP).forEach(function (inputId) {
+    var el = document.getElementById(inputId);
+    if (el) el.addEventListener('input', function () { saveAndApplyColor(inputId); });
+  });
+  document.getElementById('resetColorsBtn').addEventListener('click', function () {
+    Object.keys(COLOR_MAP).forEach(function (inputId) {
+      document.documentElement.style.removeProperty(COLOR_MAP[inputId]);
+      var el = document.getElementById(inputId);
+      if (el) el.value = DEFAULT_COLOR_VALUES[inputId];
+    });
+    try { localStorage.removeItem('mw_custom_colors'); } catch (e) {}
+  });
+  loadCustomColors();
+
+  /* =========================================================
+     STATIC TEXT TRANSLATION
+  ========================================================= */
+  function setText(id, key, vars) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = t(key, vars);
+  }
+  function setPlaceholder(id, key) {
+    var el = document.getElementById(id);
+    if (el) el.placeholder = t(key);
+  }
+  function applyStaticTranslations() {
+    document.documentElement.setAttribute('lang', currentLang);
+    document.title = t('appTitle');
+    setText('pageTitle', 'appTitle');
+    setText('pageSubtitle', 'pageSubtitle');
+    setText('tabClassic', 'tabClassicLabel');
+    setText('tabPhotos', 'tabPhotosLabel');
+    setText('tabPuzzle', 'tabPuzzleLabel');
+    setText('tabHanoi', 'tabHanoiLabel');
+    setText('classicDiffHeading', 'classicDiffHeading');
+    setText('classicPacksHeading', 'classicPacksHeading');
+    setText('backupIconPacksIntro', 'backupIconPacksIntro');
+    setText('exportIconPacksBtn', 'exportIconPacksBtnLabel');
+    setText('importIconPacksBtn', 'importIconPacksBtnLabel');
+    setText('startClassicBtn', 'startGameBtn');
+    setText('photosIntro', 'photosIntro');
+    setText('optimizePhotosIntro', 'optimizePhotosIntro');
+    setText('optimizePhotosBtn', 'optimizePhotosBtnLabel');
+    setText('backupPhotosIntro', 'backupPhotosIntro');
+    setText('exportPhotosBtn', 'exportPhotosBtnLabel');
+    setText('importPhotosBtn', 'importPhotosBtnLabel');
+    setText('packNameLabel', 'packNameLabel');
+    setPlaceholder('packNameInput', 'packNamePlaceholder');
+    setText('dzPhotosTitle', 'dzPhotosTitle');
+    setText('dzPhotosSubtitle', 'dzPhotosSubtitle');
+    setText('addToPackBtn', 'addToPackBtnLabel');
+    setText('existingPackPhotosLabel', 'existingPackPhotosLabel');
+    setText('packsHeading', 'packsHeading');
+    setText('roundSizeHeading', 'roundSizeHeading');
+    setText('roundSizeNote', 'roundSizeNote');
+    setText('startPhotosBtn', 'startGameBtn');
+    setText('puzzleIntro', 'puzzleIntro');
+    setText('puzzlePacksHeading', 'puzzlePacksHeading');
+    setText('puzzleChoosePhotoHeading', 'puzzleChoosePhotoHeading');
+    setText('puzzleSizeHeading', 'puzzleSizeHeading');
+    setText('startPuzzleBtn', 'startPuzzleBtnLabel');
+    setText('resetPuzzleBtn', 'resetPuzzleBtnLabel');
+    setText('puzzleTargetLabel', 'puzzleTargetLabel');
+    setText('statMovesLbl2', 'statMovesLbl');
+    setText('backToMenuBtnPuzzle', 'backToMenuBtnLabel');
+    setText('hanoiIntro', 'hanoiIntro');
+    setText('hanoiDiscsHeading', 'hanoiDiscsHeading');
+    setText('startHanoiBtn', 'startHanoiBtnLabel');
+    setText('statMovesLbl3', 'statMovesLbl');
+    setText('hanoiMinMovesLbl', 'hanoiMinMovesLbl');
+    setText('resetHanoiBtn', 'resetHanoiBtnLabel');
+    setText('backToMenuBtnHanoi', 'backToMenuBtnLabel');
+    setText('helpMenuClassic', 'helpMenuClassicLabel');
+    setText('helpMenuPhotos', 'helpMenuPhotosLabel');
+    setText('helpMenuPuzzle', 'helpMenuPuzzleLabel');
+    setText('helpMenuHanoi', 'helpMenuHanoiLabel');
+    setText('changePuzzlePackBtn', 'changeBtnLabel');
+    setText('changePuzzlePhotoBtn', 'changeBtnLabel');
+    setText('puzzlePhotoSummaryText', 'puzzlePhotoSummaryLabel');
+    setText('menuPhotosLabel', 'photosBuilderSummary');
+    setText('menuSymbolsLabel', 'symbolsSummary');
+    setText('symbolsInstructions', 'symbolsInstructions');
+    setText('iconPackNameLabel', 'iconPackNameLabel');
+    setPlaceholder('iconPackNameInput', 'iconPackNamePlaceholder');
+    setPlaceholder('customIconsNew', 'customIconsPlaceholder');
+    setText('saveIconPackBtn', 'saveIconPackBtnLabel');
+    // deleteSelectedIconPacksBtn text is set dynamically by updateDeleteSelectedIconPacksBtn()
+    setText('iconPacksHeading', 'iconPacksHeading');
+    setText('menuQuotesLabel', 'quotesSummary');
+    setText('quotesInstructions', 'quotesInstructions');
+    setPlaceholder('customQuotes', 'customQuotesPlaceholder');
+    setText('quotesFileLabel', 'quotesFileLabel');
+    setText('loadQuotesBtn', 'loadQuotesBtnLabel');
+    setText('addQuoteBtn', 'addQuoteBtnLabel');
+    setPlaceholder('newQuoteInput', 'newQuotePlaceholder');
+    setText('menuMusicLabel', 'musicSummary');
+    setText('musicInstructions', 'musicInstructions');
+    setText('dzMusicTitle', 'dzMusicTitle');
+    setText('dzMusicSubtitle', 'dzMusicSubtitle');
+    setText('musicListHeading', 'musicListHeading');
+    setText('shuffleLabel', 'shuffleLabel');
+    setText('menuSfxLabel', 'sfxSummary');
+    setText('sfxInstructions', 'sfxInstructions');
+    setText('sfxFlipLabel', 'sfxFlipLabel');
+    setText('sfxMatchLabel', 'sfxMatchLabel');
+    setText('dzSoundTitle1', 'dzSoundTitle');
+    setText('dzSoundTitle2', 'dzSoundTitle');
+    setText('sfxFlipRemoveBtn', 'sfxRemoveBtnLabel');
+    setText('sfxMatchRemoveBtn', 'sfxRemoveBtnLabel');
+    setText('menuColorsLabel', 'appearanceSummary');
+    setText('appearanceInstructions', 'appearanceInstructions');
+    setText('colorBgLabel', 'colorBgLabel');
+    setText('colorPanelLabel', 'colorPanelLabel');
+    setText('colorInkLabel', 'colorInkLabel');
+    setText('colorAccentLabel', 'colorAccentLabel');
+    setText('colorAccent2Label', 'colorAccent2Label');
+    setText('resetColorsBtn', 'resetColorsBtnLabel');
+    setText('statMovesLbl', 'statMovesLbl');
+    setText('statPairsLbl', 'statPairsLbl');
+    setText('backToMenuBtn', 'backToMenuBtnLabel');
+    setText('winTitle', 'winTitle');
+    setText('playAgainBtn', 'playAgainBtnLabel');
+    setText('changeModeBtn', 'changeModeBtnLabel');
+    setText('settingsTitle', 'settingsTitle');
+    setText('helpTitle', 'helpTitle');
+    renderHelpBody();
+    setText('closeHelpBtn', 'closeHelpBtnLabel');
+    helpToggle.setAttribute('aria-label', t('helpTitle'));
+    settingsToggle.setAttribute('aria-label', t('settingsTitle'));
+    themeToggle.setAttribute('aria-label', t('themeToggleAria'));
+    langToggle.setAttribute('aria-label', t('langToggleAria'));
+    langToggle.textContent = currentLang === 'el' ? 'EN' : 'ΕΛ';
+    updateSoundToggleUI();
+    updateMusicToggleUI();
+  }
+
+  function applyTranslations() {
+    applyStaticTranslations();
+    renderDiffButtons();
+    renderPackList();
+    if (selectedPackName) {
+      selectedPackLabelEl.textContent = t('selectedPackLabel', { name: selectedPackName });
+      renderRoundSizeOptions(packSummaryCache[selectedPackName] || 0);
+    }
+    renderIconPackList();
+    renderIconPreview();
+    renderMusicList();
+    renderNowPlaying();
+    refreshSfxStatusUI();
+    updateActiveSymbolsIndicator();
+    renderIconPackSymbols();
+    renderQuotesList();
+    renderPuzzleSizeSlider();
+    renderHanoiDiscButtons();
+  }
+
+  /* =========================================================
+     DIFFICULTY (classic)
+  ========================================================= */
+  var DIFFS = [
+    { key: 'vEasy', labelKey: 'diffVEasy', pairs: 4 },
+    { key: 'easy', labelKey: 'diffEasy', pairs: 6 },
+    { key: 'medium', labelKey: 'diffMedium', pairs: 8 },
+    { key: 'advanced', labelKey: 'diffAdvanced', pairs: 10 },
+    { key: 'hard', labelKey: 'diffHard', pairs: 14 },
+    { key: 'vHard', labelKey: 'diffVHard', pairs: 18 }
+  ];
+  var selectedDiff = 'easy';
+  var diffButtonsEl = document.getElementById('diffButtons');
+  function renderDiffButtons() {
+    diffButtonsEl.innerHTML = '';
+    DIFFS.forEach(function (d) {
+      var b = document.createElement('button');
+      b.className = 'diff-btn';
+      b.textContent = t('diffPairsLabel', { label: t(d.labelKey), n: d.pairs });
+      b.setAttribute('aria-pressed', d.key === selectedDiff ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        selectedDiff = d.key;
+        Array.prototype.forEach.call(diffButtonsEl.children, function (c) { c.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+      });
+      diffButtonsEl.appendChild(b);
+    });
+  }
+  renderDiffButtons();
+
+  /* =========================================================
+     TABS
+  ========================================================= */
+  var tabClassic = document.getElementById('tabClassic');
+  var tabPhotos = document.getElementById('tabPhotos');
+  var tabPuzzle = document.getElementById('tabPuzzle');
+  var tabHanoi = document.getElementById('tabHanoi');
+  var setupClassic = document.getElementById('setupClassic');
+  var setupPhotos = document.getElementById('setupPhotos');
+  var setupPuzzle = document.getElementById('setupPuzzle');
+  var setupHanoi = document.getElementById('setupHanoi');
+  var currentMode = 'classic';
+
+  function showSetup(mode) {
+    currentMode = mode;
+    tabClassic.setAttribute('aria-selected', mode === 'classic' ? 'true' : 'false');
+    tabPhotos.setAttribute('aria-selected', mode === 'photos' ? 'true' : 'false');
+    tabPuzzle.setAttribute('aria-selected', mode === 'puzzle' ? 'true' : 'false');
+    tabHanoi.setAttribute('aria-selected', mode === 'hanoi' ? 'true' : 'false');
+    setupClassic.classList.toggle('hidden', mode !== 'classic');
+    setupPhotos.classList.toggle('hidden', mode !== 'photos');
+    setupPuzzle.classList.toggle('hidden', mode !== 'puzzle');
+    setupHanoi.classList.toggle('hidden', mode !== 'hanoi');
+    document.getElementById('gameArea').classList.add('hidden');
+    document.getElementById('puzzleGameArea').classList.add('hidden');
+    document.getElementById('hanoiGameArea').classList.add('hidden');
+    document.body.classList.remove('playing');
+    activeBoardResize = null;
+  }
+  tabClassic.addEventListener('click', function () { showSetup('classic'); });
+  tabPhotos.addEventListener('click', function () { showSetup('photos'); });
+  tabPuzzle.addEventListener('click', function () { showSetup('puzzle'); loadPuzzlePacks(); });
+  tabHanoi.addEventListener('click', function () { showSetup('hanoi'); });
+
+
+  /* =========================================================
+     INDEXEDDB (photos + music)
+  ========================================================= */
+  var DB_NAME = 'mwPhotosDB';
+  var DB_VERSION = 3;
+  var dbPromise = null;
+  var dbAvailable = !!window.indexedDB;
+
+  function openDB() {
+    if (!dbAvailable) return Promise.reject(new Error('no-indexeddb'));
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise(function (resolve, reject) {
+      var req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = function (e) {
+        var db = e.target.result;
+        if (!db.objectStoreNames.contains('photos')) {
+          var store = db.createObjectStore('photos', { keyPath: 'id', autoIncrement: true });
+          store.createIndex('packName', 'packName', { unique: false });
+        }
+        if (!db.objectStoreNames.contains('music')) {
+          db.createObjectStore('music', { keyPath: 'id', autoIncrement: true });
+        }
+        if (!db.objectStoreNames.contains('sfx')) {
+          db.createObjectStore('sfx', { keyPath: 'name' });
+        }
+      };
+      req.onsuccess = function (e) { resolve(e.target.result); };
+      req.onerror = function () { reject(req.error); };
+    });
+    return dbPromise;
+  }
+  function addPhotosToPack(packName, files) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        var store = tx.objectStore('photos');
+        files.forEach(function (file) { store.add({ packName: packName, blob: file, addedAt: Date.now() }); });
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function getAllPhotoRecords() {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readonly');
+        var req = tx.objectStore('photos').getAll();
+        req.onsuccess = function () { resolve(req.result || []); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+  function getPacksSummary() {
+    return getAllPhotoRecords().then(function (all) {
+      var map = {};
+      all.forEach(function (p) { map[p.packName] = (map[p.packName] || 0) + 1; });
+      return map;
+    });
+  }
+  function getPhotosForPack(packName) {
+    return getAllPhotoRecords().then(function (all) { return all.filter(function (p) { return p.packName === packName; }); });
+  }
+  function deletePhotoRecord(id) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').delete(id);
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function deletePack(packName) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        var idx = tx.objectStore('photos').index('packName');
+        var req = idx.openCursor(IDBKeyRange.only(packName));
+        req.onsuccess = function (e) {
+          var cursor = e.target.result;
+          if (cursor) { cursor.delete(); cursor.continue(); }
+        };
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function addMusicTracks(files) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('music', 'readwrite');
+        var store = tx.objectStore('music');
+        files.forEach(function (file) { store.add({ name: file.name, blob: file, addedAt: Date.now() }); });
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function getAllMusic() {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('music', 'readonly');
+        var req = tx.objectStore('music').getAll();
+        req.onsuccess = function () { resolve(req.result || []); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+  function deleteMusicTrack(id) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('music', 'readwrite');
+        tx.objectStore('music').delete(id);
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function setSfxBlob(name, file) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('sfx', 'readwrite');
+        tx.objectStore('sfx').put({ name: name, blob: file });
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  function getSfxBlob(name) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('sfx', 'readonly');
+        var req = tx.objectStore('sfx').get(name);
+        req.onsuccess = function () { resolve(req.result || null); };
+        req.onerror = function () { reject(req.error); };
+      });
+    });
+  }
+  function deleteSfxBlob(name) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('sfx', 'readwrite');
+        tx.objectStore('sfx').delete(name);
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+
+  /* =========================================================
+     IMAGE RESIZE (performance: phone photos can be 10+ MB;
+     we shrink them before storing/displaying so the picker,
+     the game board and IndexedDB all stay fast on phones)
+  ========================================================= */
+  var PHOTO_MAX_DIM = 1000;
+  var PHOTO_JPEG_QUALITY = 0.82;
+  var PHOTO_SKIP_BELOW_BYTES = 350000; // already small: don't bother re-encoding
+
+  function resizeImageFile(file, maxDim, quality) {
+    return new Promise(function (resolve) {
+      function exportFrom(sourceImg, w, h) {
+        var scale = Math.min(1, maxDim / Math.max(w, h));
+        if (scale >= 1 && file.size <= PHOTO_SKIP_BELOW_BYTES) { resolve(file); return; }
+        var outW = Math.max(1, Math.round(w * scale));
+        var outH = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = outW; canvas.height = outH;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(sourceImg, 0, 0, outW, outH);
+        canvas.toBlob(function (blob) { resolve(blob || file); }, 'image/jpeg', quality);
+      }
+      function viaImageElement() {
+        var url = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function () { exportFrom(img, img.naturalWidth, img.naturalHeight); URL.revokeObjectURL(url); };
+        img.onerror = function () { URL.revokeObjectURL(url); resolve(file); };
+        img.src = url;
+      }
+      if (window.createImageBitmap) {
+        createImageBitmap(file, { imageOrientation: 'from-image' }).then(function (bmp) {
+          exportFrom(bmp, bmp.width, bmp.height);
+          if (bmp.close) bmp.close();
+        }).catch(viaImageElement);
+      } else {
+        viaImageElement();
+      }
+    });
+  }
+
+  /* =========================================================
+     PHOTO PACK BUILDER
+  ========================================================= */
+  var dropzone = document.getElementById('dropzone');
+  var fileInput = document.getElementById('fileInput');
+  var thumbsEl = document.getElementById('thumbs');
+  var uploadNote = document.getElementById('uploadNote');
+  var packNameInput = document.getElementById('packNameInput');
+  var addToPackBtn = document.getElementById('addToPackBtn');
+  var packListEl = document.getElementById('packList');
+  var packListNote = document.getElementById('packListNote');
+  var packPager = createPager(packListEl, document.getElementById('packPager'), 6);
+  var selectedPackLabelEl = document.getElementById('selectedPackLabel');
+  var roundSizeWrap = document.getElementById('roundSizeWrap');
+  var roundSizeButtons = document.getElementById('roundSizeButtons');
+  var startPhotosBtn = document.getElementById('startPhotosBtn');
+  var ROUND_CANDIDATES = [4, 6, 8, 10, 12, 14, 16, 18];
+  var selectedRoundSize = null;
+  var MAX_BATCH = 100;
+  var pendingFiles = [];
+  var packSummaryCache = {};
+  var selectedPackName = null;
+  var activeRoundURLs = [];
+
+  dropzone.addEventListener('click', function () { fileInput.click(); });
+  dropzone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+  var IMAGE_EXT_RE = /\.(jpe?g|png|gif|webp|heic|heif|bmp|tiff?|avif|jfif)$/i;
+  function looksLikeImage(f) { return f.type.indexOf('image/') === 0 || IMAGE_EXT_RE.test(f.name || ''); }
+  fileInput.addEventListener('change', function (e) {
+    var files = Array.prototype.slice.call(e.target.files || []);
+    var room = Math.max(0, MAX_BATCH - pendingFiles.length);
+    var accepted = files.filter(looksLikeImage).slice(0, room);
+    if (accepted.length === 0) {
+      if (files.length > 0) uploadNote.textContent = t('fileTypeNotRecognized');
+      fileInput.value = '';
+      return;
+    }
+    fileInput.disabled = true;
+    addToPackBtn.disabled = true;
+    uploadNote.textContent = t('processingPhotos', { n: accepted.length });
+    Promise.all(accepted.map(function (f) {
+      return resizeImageFile(f, PHOTO_MAX_DIM, PHOTO_JPEG_QUALITY).then(function (blob) {
+        return { file: blob, url: URL.createObjectURL(blob) };
+      });
+    })).then(function (items) {
+      items.forEach(function (item) { pendingFiles.push(item); });
+      renderThumbs();
+      fileInput.disabled = false;
+      fileInput.value = '';
+    });
+  });
+  function updateAddButtonState() { addToPackBtn.disabled = !(packNameInput.value.trim() && pendingFiles.length > 0); }
+
+  function updatePhotoBlob(id, packName, addedAt, blob) {
+    return openDB().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction('photos', 'readwrite');
+        tx.objectStore('photos').put({ id: id, packName: packName, blob: blob, addedAt: addedAt });
+        tx.oncomplete = function () { resolve(); };
+        tx.onerror = function () { reject(tx.error); };
+      });
+    });
+  }
+  var optimizePhotosBtn = document.getElementById('optimizePhotosBtn');
+  var optimizePhotosNote = document.getElementById('optimizePhotosNote');
+  optimizePhotosBtn.addEventListener('click', function () {
+    optimizePhotosBtn.disabled = true;
+    getAllPhotoRecords().then(function (all) {
+      if (all.length === 0) { optimizePhotosNote.textContent = t('optimizePhotosNoneNote'); optimizePhotosBtn.disabled = false; return; }
+      var done = 0, changed = 0;
+      optimizePhotosNote.textContent = t('optimizingPhotosNote', { done: 0, total: all.length });
+      var chain = Promise.resolve();
+      all.forEach(function (rec) {
+        chain = chain.then(function () {
+          return resizeImageFile(rec.blob, PHOTO_MAX_DIM, PHOTO_JPEG_QUALITY).then(function (newBlob) {
+            done++;
+            optimizePhotosNote.textContent = t('optimizingPhotosNote', { done: done, total: all.length });
+            if (newBlob !== rec.blob) { changed++; return updatePhotoBlob(rec.id, rec.packName, rec.addedAt, newBlob); }
+          });
+        });
+      });
+      chain.then(function () {
+        optimizePhotosNote.textContent = changed > 0 ? t('optimizePhotosDoneNote', { n: changed }) : t('optimizePhotosNoneNote');
+        optimizePhotosBtn.disabled = false;
+        if (selectedPackName) loadExistingPackPhotos(selectedPackName);
+      }).catch(function (err) { console.error(err); optimizePhotosBtn.disabled = false; });
+    }).catch(function (err) { console.error(err); optimizePhotosBtn.disabled = false; });
+  });
+
+  function blobToDataURL(blob) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result || '')); };
+      reader.onerror = function () { reject(reader.error); };
+      reader.readAsDataURL(blob);
+    });
+  }
+  document.getElementById('exportPhotosBtn').addEventListener('click', function () {
+    var btn = document.getElementById('exportPhotosBtn');
+    var note = document.getElementById('backupPhotosNote');
+    btn.disabled = true;
+    getAllPhotoRecords().then(function (all) {
+      if (all.length === 0) { note.textContent = t('backupPhotosExportEmptyNote'); btn.disabled = false; return; }
+      var out = [];
+      var done = 0;
+      note.textContent = t('backupPhotosExportProgress', { done: 0, total: all.length });
+      var chain = Promise.resolve();
+      all.forEach(function (rec) {
+        chain = chain.then(function () {
+          return blobToDataURL(rec.blob).then(function (dataUrl) {
+            out.push({ packName: rec.packName, addedAt: rec.addedAt, dataUrl: dataUrl });
+            done++;
+            note.textContent = t('backupPhotosExportProgress', { done: done, total: all.length });
+          });
+        });
+      });
+      chain.then(function () {
+        var payload = { mw_photo_packs_backup: true, exportedAt: new Date().toISOString(), photos: out };
+        var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'mnimi-sofia-photo-packs.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        note.textContent = t('backupPhotosExportDoneNote');
+        btn.disabled = false;
+      }).catch(function (err) { console.error(err); btn.disabled = false; });
+    }).catch(function (err) { console.error(err); btn.disabled = false; });
+  });
+  document.getElementById('importPhotosBtn').addEventListener('click', function () {
+    document.getElementById('importPhotosInput').click();
+  });
+  document.getElementById('importPhotosInput').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    var note = document.getElementById('backupPhotosNote');
+    var btn = document.getElementById('importPhotosBtn');
+    if (!file) return;
+    btn.disabled = true;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(String(reader.result || ''));
+        var photos = data && data.photos ? data.photos : null;
+        if (!photos || !Array.isArray(photos) || photos.length === 0) throw new Error('bad-format');
+        var done = 0;
+        note.textContent = t('backupPhotosImportProgress', { done: 0, total: photos.length });
+        var chain = Promise.resolve();
+        photos.forEach(function (p) {
+          chain = chain.then(function () {
+            return fetch(p.dataUrl).then(function (r) { return r.blob(); }).then(function (blob) {
+              return addPhotosToPack(p.packName, [blob]);
+            }).then(function () {
+              done++;
+              note.textContent = t('backupPhotosImportProgress', { done: done, total: photos.length });
+            });
+          });
+        });
+        chain.then(function () {
+          note.textContent = t('backupPhotosImportDoneNote', { n: done });
+          btn.disabled = false;
+          loadPacks();
+          if (selectedPackName) loadExistingPackPhotos(selectedPackName);
+        }).catch(function (err) { console.error(err); note.textContent = t('backupPhotosImportErrorNote'); btn.disabled = false; });
+      } catch (err) {
+        note.textContent = t('backupPhotosImportErrorNote');
+        btn.disabled = false;
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+    e.target.value = '';
+  });
+
+  var existingPackPhotosWrap = document.getElementById('existingPackPhotosWrap');
+  var existingPackPhotosGrid = document.getElementById('existingPackPhotosGrid');
+  var existingPackSelectedIds = {};
+  function loadExistingPackPhotos(name) {
+    if (!name || !packSummaryCache[name]) { existingPackPhotosWrap.classList.add('hidden'); return; }
+    existingPackSelectedIds = {};
+    getPhotosForPack(name).then(function (records) {
+      existingPackPhotosGrid.innerHTML = '';
+      records.forEach(function (rec) {
+        var url = URL.createObjectURL(rec.blob);
+        var d = document.createElement('div');
+        d.className = 'thumb';
+        var img = document.createElement('img');
+        img.src = url; img.alt = '';
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', function () {
+          if (existingPackSelectedIds[rec.id]) delete existingPackSelectedIds[rec.id];
+          else existingPackSelectedIds[rec.id] = true;
+          d.classList.toggle('active');
+          updateExistingPackDeleteSelectedBtn();
+        });
+        d.appendChild(img);
+        existingPackPhotosGrid.appendChild(d);
+      });
+      existingPackPhotosWrap.classList.remove('hidden');
+      updateExistingPackDeleteSelectedBtn();
+    });
+  }
+  function updateExistingPackDeleteSelectedBtn() {
+    var ids = Object.keys(existingPackSelectedIds);
+    var btn = document.getElementById('deleteSelectedPackPhotosBtn');
+    btn.disabled = ids.length === 0;
+    btn.textContent = t('deleteSelectedBtnLabel', { n: ids.length });
+  }
+  document.getElementById('deleteSelectedPackPhotosBtn').addEventListener('click', function () {
+    var name = packNameInput.value.trim();
+    var ids = Object.keys(existingPackSelectedIds).map(function (s) { return parseInt(s, 10); });
+    Promise.all(ids.map(deletePhotoRecord)).then(function () {
+      loadExistingPackPhotos(name);
+      loadPacks();
+    });
+  });
+  packNameInput.addEventListener('input', function () {
+    updateAddButtonState();
+    loadExistingPackPhotos(packNameInput.value.trim());
+  });
+  function renderThumbs() {
+    thumbsEl.innerHTML = '';
+    pendingFiles.forEach(function (item, idx) {
+      var d = document.createElement('div');
+      d.className = 'thumb';
+      var img = document.createElement('img');
+      img.src = item.url; img.alt = '';
+      var rm = document.createElement('button');
+      rm.type = 'button'; rm.textContent = '×';
+      rm.addEventListener('click', function () { URL.revokeObjectURL(item.url); pendingFiles.splice(idx, 1); renderThumbs(); });
+      d.appendChild(img); d.appendChild(rm);
+      thumbsEl.appendChild(d);
+    });
+    uploadNote.textContent = pendingFiles.length > 0 ? t('willAdd', { n: pendingFiles.length }) : '';
+    updateAddButtonState();
+  }
+  addToPackBtn.addEventListener('click', function () {
+    var name = packNameInput.value.trim();
+    if (!name || pendingFiles.length === 0) return;
+    var files = pendingFiles.map(function (p) { return p.file; });
+    addToPackBtn.disabled = true;
+    addPhotosToPack(name, files).then(function () {
+      pendingFiles.forEach(function (p) { URL.revokeObjectURL(p.url); });
+      pendingFiles = [];
+      renderThumbs();
+      packNameInput.value = '';
+      return loadPacks().then(function () { selectPack(name); });
+    }).catch(function (err) { packListNote.textContent = t('packSaveErrorNote'); console.error(err); });
+  });
+  function renderPackList() {
+    var names = Object.keys(packSummaryCache);
+    packListNote.textContent = names.length === 0 ? (dbAvailable ? t('packsEmptyNote') : t('packsUnavailableNote')) : '';
+    packPager.setItems(names, function (name) {
+      var chip = document.createElement('div');
+      chip.className = 'pack-chip' + (name === selectedPackName ? ' active' : '');
+      var selectBtn = document.createElement('button');
+      selectBtn.type = 'button'; selectBtn.className = 'pack-select-btn';
+      selectBtn.textContent = t('packChipLabel', { name: name, count: packSummaryCache[name] });
+      selectBtn.addEventListener('click', function () { selectPack(name); });
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.className = 'pack-delete-btn'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        deletePack(name).then(function () {
+          if (selectedPackName === name) {
+            selectedPackName = null; selectedPackLabelEl.textContent = '';
+            roundSizeWrap.classList.add('hidden'); startPhotosBtn.disabled = true;
+          }
+          return loadPacks();
+        });
+      });
+      chip.appendChild(selectBtn); chip.appendChild(delBtn);
+      return chip;
+    }, true);
+  }
+  function loadPacks() {
+    return getPacksSummary().then(function (summary) { packSummaryCache = summary; renderPackList(); })
+      .catch(function () { packSummaryCache = {}; packListNote.textContent = t('packsUnavailableNote'); });
+  }
+  function selectPack(name) {
+    selectedPackName = name;
+    selectedPackLabelEl.textContent = t('selectedPackLabel', { name: name });
+    renderPackList();
+    renderRoundSizeOptions(packSummaryCache[name] || 0);
+  }
+  function renderRoundSizeOptions(poolSize) {
+    if (poolSize < 4) { roundSizeWrap.classList.add('hidden'); selectedRoundSize = null; startPhotosBtn.disabled = true; return; }
+    var options = ROUND_CANDIDATES.filter(function (n) { return n <= poolSize; });
+    if (options.length === 0) options = [poolSize];
+    if (!selectedRoundSize || options.indexOf(selectedRoundSize) === -1) selectedRoundSize = options[0];
+    roundSizeButtons.innerHTML = '';
+    options.forEach(function (n) {
+      var b = document.createElement('button');
+      b.className = 'diff-btn'; b.textContent = t('pairsCount', { n: n });
+      b.setAttribute('aria-pressed', n === selectedRoundSize ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        selectedRoundSize = n;
+        Array.prototype.forEach.call(roundSizeButtons.children, function (c) { c.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+      });
+      roundSizeButtons.appendChild(b);
+    });
+    roundSizeWrap.classList.remove('hidden');
+    startPhotosBtn.disabled = false;
+  }
+  loadPacks();
+
+  /* =========================================================
+     SYMBOL PACKS (classic mode)
+  ========================================================= */
+  var DEFAULT_ICONS = ['🦋', '🕊️', '🦉', '🌸', '🌊', '🌙', '☀️', '🫒', '🌿', '🍇', '⭐', '🐢', '🦢', '🐝', '🔔', '🦚'];
+  // Built-in shared packs: baked into the game itself, so every visitor sees
+  // them right away — not something saved per-device. Not user-deletable.
+  var BUILTIN_ICON_PACKS = {
+    "Λέξεις: Ψυχική Ανάπτυξη": ["Υπομονή","Γαλήνη","Ευτυχία","Ηρεμία","Αγάπη","Σοφία","Ελπίδα","Ευγνωμοσύνη","Συγχώρεση","Δύναμη","Θάρρος","Ισορροπία","Ελευθερία","Αρμονία","Φώτιση","Αποδοχή","Ευγένεια","Πίστη","Ανθεκτικότητα","Δημιουργικότητα","Ταπεινότητα","Αλήθεια","Φως","Ψυχή","Πνεύμα","Ενότητα","Σιωπή","Διαλογισμός","Αισιοδοξία","Ευλογία"],
+    "Words: Mental Growth": ["Patience","Serenity","Happiness","Calm","Love","Wisdom","Hope","Gratitude","Forgiveness","Strength","Courage","Balance","Freedom","Harmony","Enlightenment","Acceptance","Kindness","Faith","Resilience","Creativity","Humility","Truth","Light","Soul","Spirit","Unity","Silence","Meditation","Optimism","Blessing"]
+  };
+  var ICONS = DEFAULT_ICONS.slice();
+  var iconPacks = {};
+  var selectedIconPackName = null;
+  var iconPackNameInput = document.getElementById('iconPackNameInput');
+  var customIconsNew = document.getElementById('customIconsNew');
+  var saveIconPackBtn = document.getElementById('saveIconPackBtn');
+  var iconPackListEl = document.getElementById('iconPackList');
+  var iconPackListNote = document.getElementById('iconPackListNote');
+
+  function loadIconPacks() {
+    try {
+      var raw = localStorage.getItem('mw_icon_packs');
+      iconPacks = raw ? JSON.parse(raw) : {};
+    } catch (e) { iconPacks = {}; }
+    Object.keys(BUILTIN_ICON_PACKS).forEach(function (name) {
+      if (!(name in iconPacks)) iconPacks[name] = BUILTIN_ICON_PACKS[name].slice();
+    });
+  }
+  function saveIconPacks() {
+    var toSave = {};
+    Object.keys(iconPacks).forEach(function (name) {
+      if (!(name in BUILTIN_ICON_PACKS)) toSave[name] = iconPacks[name];
+    });
+    try { localStorage.setItem('mw_icon_packs', JSON.stringify(toSave)); } catch (e) {}
+  }
+  function segmentGraphemes(str) {
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+      try {
+        var seg = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
+        var out = [];
+        var iter = seg.segment(str)[Symbol.iterator]();
+        var r = iter.next();
+        while (!r.done) { out.push(r.value.segment); r = iter.next(); }
+        return out;
+      } catch (e) { return Array.from(str); }
+    }
+    return Array.from(str);
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  // For long words on memory cards: instead of letting the browser wrap
+  // wherever it runs out of room (which can strand a single orphan letter
+  // on its own line), we suggest one balanced break near the middle.
+  function softBreakWord(word) {
+    var g = segmentGraphemes(word);
+    if (g.length <= 7) return escapeHtml(word);
+    var mid = Math.ceil(g.length / 2);
+    return escapeHtml(g.slice(0, mid).join('')) + '<wbr>' + escapeHtml(g.slice(mid).join(''));
+  }
+  function renderWordCardContent(content) {
+    return content.split(' ').map(softBreakWord).join(' ');
+  }
+  function parseIconsInput(raw) {
+    var trimmed = raw.trim();
+    if (!trimmed) return [];
+    // Words/phrases: separated by commas or new lines — each piece stays whole.
+    if (/[,\n]/.test(trimmed)) {
+      return trimmed.split(/[,\n]+/).map(function (s) { return s.trim(); }).filter(Boolean);
+    }
+    // Legacy: a run of emoji with no commas/newlines — split into individual symbols.
+    var chunks = trimmed.split(/\s+/).filter(Boolean);
+    var result = [];
+    chunks.forEach(function (chunk) { result = result.concat(segmentGraphemes(chunk)); });
+    return result;
+  }
+  function renderIconPreview() {
+    var el = document.getElementById('iconsPreview');
+    if (el) el.textContent = t('iconsPreviewLabel', { n: ICONS.length, list: ICONS.join(' ') });
+  }
+  function selectIconPack(name) {
+    selectedIconPackName = name;
+    if (name && iconPacks[name] && iconPacks[name].length >= 6) ICONS = iconPacks[name].slice();
+    else ICONS = DEFAULT_ICONS.slice();
+    renderIconPackList();
+    renderIconPreview();
+    updateActiveSymbolsIndicator();
+    renderIconPackSymbols();
+    renderClassicPackList();
+  }
+  function renderClassicPackList() {
+    var el = document.getElementById('classicPackList');
+    if (!el) return;
+    el.innerHTML = '';
+    var defaultChip = document.createElement('div');
+    defaultChip.className = 'pack-chip' + (!selectedIconPackName ? ' active' : '');
+    var defaultBtn = document.createElement('button');
+    defaultBtn.type = 'button'; defaultBtn.className = 'pack-select-btn';
+    defaultBtn.textContent = t('defaultPackName');
+    defaultBtn.addEventListener('click', function () { selectIconPack(null); });
+    defaultChip.appendChild(defaultBtn);
+    el.appendChild(defaultChip);
+    Object.keys(iconPacks).forEach(function (name) {
+      var chip = document.createElement('div');
+      chip.className = 'pack-chip' + (name === selectedIconPackName ? ' active' : '');
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'pack-select-btn';
+      btn.textContent = (name in BUILTIN_ICON_PACKS ? '🌟 ' : '') + t('packChipLabel', { name: name, count: iconPacks[name].length });
+      btn.addEventListener('click', function () { selectIconPack(name); });
+      chip.appendChild(btn);
+      el.appendChild(chip);
+    });
+  }
+  function renderIconPackSymbols() {
+    var wrap = document.getElementById('iconPackSymbolsWrap');
+    var grid = document.getElementById('iconPackSymbolsGrid');
+    if (!selectedIconPackName || !iconPacks[selectedIconPackName]) { wrap.classList.add('hidden'); return; }
+    grid.innerHTML = '';
+    iconPacks[selectedIconPackName].forEach(function (sym, idx) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'symbol-chip';
+      chip.textContent = sym + ' ×';
+      chip.addEventListener('click', function () {
+        iconPacks[selectedIconPackName].splice(idx, 1);
+        if (iconPacks[selectedIconPackName].length < 6) {
+          delete iconPacks[selectedIconPackName];
+          saveIconPacks();
+          selectIconPack(null);
+        } else {
+          saveIconPacks();
+          ICONS = iconPacks[selectedIconPackName].slice();
+          renderIconPreview();
+          renderIconPackSymbols();
+        }
+      });
+      grid.appendChild(chip);
+    });
+    document.getElementById('iconPackSymbolsLabel').textContent = t('iconPackSymbolsLabel');
+    wrap.classList.remove('hidden');
+  }
+  function updateActiveSymbolsIndicator() {
+    var el = document.getElementById('activeSymbolsIndicator');
+    if (el) el.textContent = t('activeSymbolsLabel', { name: selectedIconPackName || t('defaultPackName') });
+  }
+  function renderIconPackList() {
+    iconPackListEl.innerHTML = '';
+    var names = Object.keys(iconPacks);
+    iconPackListNote.textContent = names.length === 0 ? t('iconPacksEmptyNote') : '';
+    names.forEach(function (name) {
+      var isBuiltin = name in BUILTIN_ICON_PACKS;
+      var chip = document.createElement('div');
+      chip.className = 'pack-chip' + (name === selectedIconPackName ? ' active' : '');
+      var selectBtn = document.createElement('button');
+      selectBtn.type = 'button'; selectBtn.className = 'pack-select-btn';
+      selectBtn.textContent = (isBuiltin ? '🌟 ' : '') + t('packChipLabel', { name: name, count: iconPacks[name].length });
+      selectBtn.addEventListener('click', function () { selectIconPack(name); });
+      chip.appendChild(selectBtn);
+      if (!isBuiltin) {
+        var delBtn = document.createElement('button');
+        delBtn.type = 'button';
+        delBtn.className = 'pack-delete-btn' + (iconPacksMarkedForDelete[name] ? ' marked' : '');
+        delBtn.textContent = '×';
+        delBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (iconPacksMarkedForDelete[name]) delete iconPacksMarkedForDelete[name];
+          else iconPacksMarkedForDelete[name] = true;
+          renderIconPackList();
+        });
+        chip.appendChild(delBtn);
+      }
+      iconPackListEl.appendChild(chip);
+    });
+    updateDeleteSelectedIconPacksBtn();
+  }
+  saveIconPackBtn.addEventListener('click', function () {
+    var name = iconPackNameInput.value.trim();
+    var list = parseIconsInput(customIconsNew.value);
+    var noteEl = document.getElementById('iconPackSaveNote');
+    if (!name) { noteEl.textContent = t('iconPackNeedName'); return; }
+    if (list.length < 6) { noteEl.textContent = t('iconPackNeedMore', { n: list.length }); return; }
+    noteEl.textContent = '';
+    iconPacks[name] = list;
+    saveIconPacks();
+    iconPackNameInput.value = '';
+    customIconsNew.value = '';
+    selectIconPack(name);
+  });
+  var iconPacksMarkedForDelete = {};
+  loadIconPacks();
+  renderIconPackList();
+  renderIconPreview();
+  updateActiveSymbolsIndicator();
+  renderClassicPackList();
+  function updateDeleteSelectedIconPacksBtn() {
+    var names = Object.keys(iconPacksMarkedForDelete);
+    var btn = document.getElementById('deleteSelectedIconPacksBtn');
+    if (!btn) return;
+    btn.disabled = names.length === 0;
+    btn.textContent = t('deleteSelectedBtnLabel', { n: names.length });
+  }
+  document.getElementById('deleteSelectedIconPacksBtn').addEventListener('click', function () {
+    var names = Object.keys(iconPacksMarkedForDelete);
+    var wasActiveDeleted = false;
+    names.forEach(function (name) {
+      if (iconPacks[name] && !(name in BUILTIN_ICON_PACKS)) {
+        delete iconPacks[name];
+        if (selectedIconPackName === name) wasActiveDeleted = true;
+      }
+    });
+    iconPacksMarkedForDelete = {};
+    saveIconPacks();
+    if (wasActiveDeleted) selectIconPack(null); else { renderIconPackList(); renderClassicPackList(); }
+  });
+
+  document.getElementById('exportIconPacksBtn').addEventListener('click', function () {
+    var note = document.getElementById('backupIconPacksNote');
+    var names = Object.keys(iconPacks).filter(function (n) { return !(n in BUILTIN_ICON_PACKS); });
+    if (names.length === 0) { note.textContent = t('backupExportEmptyNote'); return; }
+    var packsToExport = {};
+    names.forEach(function (n) { packsToExport[n] = iconPacks[n]; });
+    var payload = { mw_symbol_packs_backup: true, exportedAt: new Date().toISOString(), packs: packsToExport };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'mnimi-sofia-symbol-packs.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    note.textContent = t('backupExportDoneNote');
+  });
+  document.getElementById('importIconPacksBtn').addEventListener('click', function () {
+    document.getElementById('importIconPacksInput').click();
+  });
+  document.getElementById('importIconPacksInput').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    var note = document.getElementById('backupIconPacksNote');
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      try {
+        var data = JSON.parse(String(reader.result || ''));
+        var packs = data && data.packs ? data.packs : null;
+        if (!packs || typeof packs !== 'object') throw new Error('bad-format');
+        var n = 0;
+        Object.keys(packs).forEach(function (name) {
+          if (Array.isArray(packs[name]) && packs[name].length >= 6) { iconPacks[name] = packs[name]; n++; }
+        });
+        if (n === 0) throw new Error('empty');
+        saveIconPacks();
+        renderIconPackList();
+        renderClassicPackList();
+        note.textContent = t('backupImportDoneNote', { n: n });
+      } catch (err) {
+        note.textContent = t('backupImportErrorNote');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+    e.target.value = '';
+  });
+
+  /* =========================================================
+     QUOTES
+  ========================================================= */
+  var QUOTES = DEFAULT_QUOTES[currentLang].slice();
+  var quotePool = [];
+  var lastQuoteText = '';
+  function nextQuote() {
+    if (quotePool.length === 0) {
+      quotePool = QUOTES.slice();
+      for (var i = quotePool.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = quotePool[i]; quotePool[i] = quotePool[j]; quotePool[j] = tmp;
+      }
+    }
+    return quotePool.pop();
+  }
+  function applyCustomQuotes() {
+    var ta = document.getElementById('customQuotes');
+    var raw = ta.value.trim();
+    var lines = raw.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    QUOTES = lines.length > 0 ? lines : DEFAULT_QUOTES[currentLang].slice();
+    quotePool = [];
+    try { localStorage.setItem('mw_custom_quotes', raw); } catch (e) {}
+  }
+  try {
+    var savedCustomQ = localStorage.getItem('mw_custom_quotes');
+    var customQuotesEl = document.getElementById('customQuotes');
+    if (savedCustomQ && customQuotesEl) customQuotesEl.value = savedCustomQ;
+  } catch (e) {}
+  document.getElementById('loadQuotesBtn').addEventListener('click', function () {
+    var text = DEFAULT_QUOTES[currentLang].join('\n');
+    var ta = document.getElementById('customQuotes');
+    ta.value = text;
+    try { localStorage.setItem('mw_custom_quotes', text); } catch (e) {}
+    renderQuotesList();
+  });
+  function getCurrentQuotesArray() {
+    var raw = customQuotesEl.value.trim();
+    if (raw) return raw.split('\n').map(function (s) { return s.trim(); }).filter(Boolean);
+    return DEFAULT_QUOTES[currentLang].slice();
+  }
+  function saveQuotesArray(list) {
+    var text = list.join('\n');
+    customQuotesEl.value = text;
+    try { localStorage.setItem('mw_custom_quotes', text); } catch (e) {}
+  }
+  function renderQuotesList() {
+    var container = document.getElementById('quotesListContainer');
+    container.innerHTML = '';
+    var list = getCurrentQuotesArray();
+    list.forEach(function (q, idx) {
+      var row = document.createElement('div');
+      row.className = 'track-row';
+      var span = document.createElement('span');
+      span.className = 'track-name';
+      span.style.cursor = 'default';
+      span.style.whiteSpace = 'normal';
+      span.textContent = q;
+      var rm = document.createElement('button');
+      rm.type = 'button'; rm.className = 'pack-delete-btn'; rm.textContent = '×';
+      rm.addEventListener('click', function () {
+        var newList = getCurrentQuotesArray();
+        newList.splice(idx, 1);
+        saveQuotesArray(newList);
+        renderQuotesList();
+      });
+      row.appendChild(span); row.appendChild(rm);
+      container.appendChild(row);
+    });
+  }
+  document.getElementById('addQuoteBtn').addEventListener('click', function () {
+    var input = document.getElementById('newQuoteInput');
+    var val = input.value.trim();
+    if (!val) return;
+    var list = getCurrentQuotesArray();
+    list.push(val);
+    saveQuotesArray(list);
+    input.value = '';
+    renderQuotesList();
+  });
+  customQuotesEl.addEventListener('input', renderQuotesList);
+  renderQuotesList();
+  var quotesFileInput = document.getElementById('quotesFileInput');
+  quotesFileInput.addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var text = String(reader.result || '');
+      document.getElementById('customQuotes').value = text;
+      try { localStorage.setItem('mw_custom_quotes', text); } catch (err) {}
+    };
+    reader.readAsText(f, 'UTF-8');
+    quotesFileInput.value = '';
+  });
+
+  /* =========================================================
+     MUSIC PLAYER
+  ========================================================= */
+  var musicDropzone = document.getElementById('musicDropzone');
+  var musicFileInput = document.getElementById('musicFileInput');
+  var musicListEl = document.getElementById('musicList');
+  var musicListNote = document.getElementById('musicListNote');
+  var shuffleToggle = document.getElementById('shuffleToggle');
+  var nowPlayingLabel = document.getElementById('nowPlayingLabel');
+  var musicToggle = document.getElementById('musicToggle');
+  var musicTracks = [];
+  var currentTrackId = null;
+  var isPlaying = false;
+  var lastTrackURL = null;
+  var audioEl = new Audio();
+  var shuffleOn = false;
+  try { shuffleOn = localStorage.getItem('mw_shuffle') === '1'; } catch (e) {}
+  shuffleToggle.checked = shuffleOn;
+  shuffleToggle.addEventListener('change', function () {
+    shuffleOn = shuffleToggle.checked;
+    try { localStorage.setItem('mw_shuffle', shuffleOn ? '1' : '0'); } catch (e) {}
+  });
+
+  musicDropzone.addEventListener('click', function () { musicFileInput.click(); });
+  musicDropzone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); musicFileInput.click(); } });
+  var AUDIO_EXT_RE = /\.(mp3|wav|m4a|aac|ogg|oga|flac|aiff?|opus|wma|weba)$/i;
+  function looksLikeAudio(f) { return f.type.indexOf('audio/') === 0 || AUDIO_EXT_RE.test(f.name || ''); }
+  musicFileInput.addEventListener('change', function (e) {
+    var allFiles = Array.prototype.slice.call(e.target.files || []);
+    var files = allFiles.filter(looksLikeAudio);
+    if (files.length === 0) {
+      if (allFiles.length > 0) musicListNote.textContent = t('fileTypeNotRecognized');
+      musicFileInput.value = '';
+      return;
+    }
+    addMusicTracks(files).then(loadMusic).catch(function (err) { console.error(err); });
+    musicFileInput.value = '';
+  });
+  function loadMusic() {
+    return getAllMusic().then(function (list) { musicTracks = list; renderMusicList(); }).catch(function () { musicTracks = []; renderMusicList(); });
+  }
+  function renderMusicList() {
+    musicListEl.innerHTML = '';
+    musicListNote.textContent = musicTracks.length === 0 ? t('musicEmptyNote') : '';
+    musicTracks.forEach(function (rec) {
+      var row = document.createElement('div');
+      row.className = 'track-row' + (rec.id === currentTrackId ? ' active' : '');
+      var nameBtn = document.createElement('button');
+      nameBtn.type = 'button'; nameBtn.className = 'track-name'; nameBtn.textContent = rec.name;
+      nameBtn.addEventListener('click', function () { playTrackById(rec.id); });
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.className = 'pack-delete-btn'; delBtn.textContent = '×';
+      delBtn.addEventListener('click', function () {
+        deleteMusicTrack(rec.id).then(function () {
+          if (currentTrackId === rec.id) { audioEl.pause(); isPlaying = false; currentTrackId = null; updateMusicToggleUI(); renderNowPlaying(); }
+          loadMusic();
+        });
+      });
+      row.appendChild(nameBtn); row.appendChild(delBtn);
+      musicListEl.appendChild(row);
+    });
+  }
+  function renderNowPlaying() {
+    if (currentTrackId != null) {
+      var rec = musicTracks.filter(function (r) { return r.id === currentTrackId; })[0];
+      nowPlayingLabel.textContent = rec ? t('nowPlaying', { name: rec.name }) : t('noTrackPlaying');
+    } else {
+      nowPlayingLabel.textContent = t('noTrackPlaying');
+    }
+  }
+  function playTrackById(id) {
+    var rec = musicTracks.filter(function (r) { return r.id === id; })[0];
+    if (!rec) return;
+    if (lastTrackURL) URL.revokeObjectURL(lastTrackURL);
+    var url = URL.createObjectURL(rec.blob);
+    lastTrackURL = url;
+    audioEl.src = url;
+    audioEl.play().catch(function () {});
+    currentTrackId = id;
+    isPlaying = true;
+    renderMusicList();
+    renderNowPlaying();
+    updateMusicToggleUI();
+  }
+  audioEl.addEventListener('ended', function () {
+    if (musicTracks.length === 0) return;
+    var idx = musicTracks.findIndex(function (r) { return r.id === currentTrackId; });
+    var nextIdx;
+    if (shuffleOn && musicTracks.length > 1) {
+      do { nextIdx = Math.floor(Math.random() * musicTracks.length); } while (nextIdx === idx);
+    } else {
+      nextIdx = (idx + 1) % musicTracks.length;
+    }
+    playTrackById(musicTracks[nextIdx].id);
+  });
+  function toggleMusicPlayPause() {
+    if (currentTrackId == null) {
+      if (musicTracks.length > 0) playTrackById(musicTracks[0].id);
+      return;
+    }
+    if (audioEl.paused) { audioEl.play().catch(function () {}); isPlaying = true; }
+    else { audioEl.pause(); isPlaying = false; }
+    updateMusicToggleUI();
+  }
+  function updateMusicToggleUI() {
+    musicToggle.textContent = isPlaying ? '⏸️' : '▶️';
+    musicToggle.setAttribute('aria-label', t(isPlaying ? 'musicToggleAriaPause' : 'musicToggleAriaPlay'));
+  }
+  musicToggle.addEventListener('click', toggleMusicPlayPause);
+  loadMusic();
+
+  /* =========================================================
+     PUZZLE MODE
+  ========================================================= */
+  var PUZZLE_SIZE = 4;
+  var PUZZLE_MIN_SIZE = 2;
+  var PUZZLE_MAX_SIZE = 18;
+  var puzzleSelectedSize = 4;
+  var puzzleSelectedPhotoURL = null;
+  var puzzleSizeWrap = document.getElementById('puzzleSizeWrap');
+  var puzzleSizeSlider = document.getElementById('puzzleSizeSlider');
+  var puzzleSizeValueEl = document.getElementById('puzzleSizeValue');
+  var puzzleStartWrap = document.getElementById('puzzleStartWrap');
+  var startPuzzleBtnEl = document.getElementById('startPuzzleBtn');
+  var puzzlePackListEl = document.getElementById('puzzlePackList');
+  var puzzlePackListNote = document.getElementById('puzzlePackListNote');
+  var puzzlePackPager = createPager(puzzlePackListEl, document.getElementById('puzzlePackPager'), 6);
+  var puzzlePackStepEl = document.getElementById('puzzlePackStep');
+  var puzzlePackSummaryEl = document.getElementById('puzzlePackSummary');
+  var puzzlePackSummaryTextEl = document.getElementById('puzzlePackSummaryText');
+  var changePuzzlePackBtn = document.getElementById('changePuzzlePackBtn');
+  var puzzlePhotoChoiceWrap = document.getElementById('puzzlePhotoChoiceWrap');
+  var puzzlePhotoChoicesEl = document.getElementById('puzzlePhotoChoices');
+  var puzzlePhotoPager = createPager(puzzlePhotoChoicesEl, document.getElementById('puzzlePhotoPager'), 8);
+  var puzzlePhotoSummaryEl = document.getElementById('puzzlePhotoSummary');
+  var puzzlePhotoSummaryImg = document.getElementById('puzzlePhotoSummaryImg');
+  var changePuzzlePhotoBtn = document.getElementById('changePuzzlePhotoBtn');
+  var puzzleBoardEl = document.getElementById('puzzleBoard');
+  var puzzleMovesEl = document.getElementById('puzzleMoves');
+  var puzzleTargetImg = document.getElementById('puzzleTargetImg');
+  var puzzleStatsBarEl = document.getElementById('puzzleStatsBar');
+  var puzzleTargetWrapEl = document.getElementById('puzzleTargetWrap');
+  var puzzleBottomRowEl = document.getElementById('puzzleBottomRow');
+  var puzzlePackSummary = {};
+  var puzzleSelectedPack = null;
+  var puzzleSelectedIds = {};
+  var puzzleThumbUrlById = {};
+  var puzzleTiles = [];
+  var puzzleSelectedTile = null;
+  var puzzleMoves = 0;
+  var puzzleImgURL = null;
+
+  function loadPuzzlePacks() {
+    getPacksSummary().then(function (summary) {
+      puzzlePackSummary = summary;
+      renderPuzzlePackList();
+    }).catch(function () {
+      puzzlePackSummary = {};
+      puzzlePackListNote.textContent = t('packsUnavailableNote');
+    });
+  }
+  function renderPuzzlePackList() {
+    var names = Object.keys(puzzlePackSummary);
+    puzzlePackListNote.textContent = names.length === 0 ? (dbAvailable ? t('packsEmptyNote') : t('packsUnavailableNote')) : '';
+    puzzlePackPager.setItems(names, function (name) {
+      var chip = document.createElement('div');
+      chip.className = 'pack-chip' + (name === puzzleSelectedPack ? ' active' : '');
+      var selectBtn = document.createElement('button');
+      selectBtn.type = 'button'; selectBtn.className = 'pack-select-btn';
+      selectBtn.textContent = t('packChipLabel', { name: name, count: puzzlePackSummary[name] });
+      selectBtn.addEventListener('click', function () { selectPuzzlePack(name); });
+      chip.appendChild(selectBtn);
+      return chip;
+    }, true);
+  }
+  function selectPuzzlePack(name) {
+    puzzleSelectedPack = name;
+    puzzleSelectedIds = {};
+    puzzleSelectedPhotoURL = null;
+    puzzlePackStepEl.classList.add('hidden');
+    puzzlePackSummaryEl.classList.remove('hidden');
+    puzzlePackSummaryTextEl.textContent = t('puzzlePackSummaryLabel', { name: name });
+    puzzlePhotoChoiceWrap.classList.add('hidden');
+    puzzlePhotoSummaryEl.classList.add('hidden');
+    puzzleSizeWrap.classList.add('hidden');
+    puzzleStartWrap.classList.add('hidden');
+    getPhotosForPack(name).then(renderPuzzlePhotoChoices);
+  }
+  changePuzzlePackBtn.addEventListener('click', function () {
+    puzzleSelectedPack = null;
+    puzzleSelectedIds = {};
+    puzzleSelectedPhotoURL = null;
+    puzzlePackStepEl.classList.remove('hidden');
+    puzzlePackSummaryEl.classList.add('hidden');
+    puzzlePhotoChoiceWrap.classList.add('hidden');
+    puzzlePhotoSummaryEl.classList.add('hidden');
+    puzzleSizeWrap.classList.add('hidden');
+    puzzleStartWrap.classList.add('hidden');
+    renderPuzzlePackList();
+  });
+  changePuzzlePhotoBtn.addEventListener('click', function () {
+    puzzlePhotoChoiceWrap.classList.remove('hidden');
+    puzzlePhotoSummaryEl.classList.add('hidden');
+  });
+  function renderPuzzlePhotoChoices(records) {
+    puzzleThumbUrlById = {};
+    records.forEach(function (rec) { puzzleThumbUrlById[rec.id] = URL.createObjectURL(rec.blob); });
+    puzzlePhotoPager.setItems(records, function (rec) {
+      var url = puzzleThumbUrlById[rec.id];
+      var d = document.createElement('div');
+      d.className = 'thumb' + (puzzleSelectedIds[rec.id] ? ' active' : '');
+      var img = document.createElement('img');
+      img.src = url; img.alt = '';
+      img.style.cursor = 'pointer';
+      img.addEventListener('click', function () {
+        if (puzzleSelectedIds[rec.id]) delete puzzleSelectedIds[rec.id];
+        else puzzleSelectedIds[rec.id] = true;
+        d.classList.toggle('active');
+        updatePuzzleSelectionUI();
+      });
+      d.appendChild(img);
+      return d;
+    });
+    puzzlePhotoChoiceWrap.classList.remove('hidden');
+    updatePuzzleSelectionUI();
+  }
+  function updatePuzzleSelectionUI() {
+    var ids = Object.keys(puzzleSelectedIds);
+    var deleteBtn = document.getElementById('deleteSelectedPuzzlePhotosBtn');
+    deleteBtn.disabled = ids.length === 0;
+    deleteBtn.textContent = t('deleteSelectedBtnLabel', { n: ids.length });
+    if (ids.length === 1) {
+      puzzleSelectedPhotoURL = puzzleThumbUrlById[ids[0]];
+      puzzlePhotoChoiceWrap.classList.add('hidden');
+      puzzlePhotoSummaryEl.classList.remove('hidden');
+      puzzlePhotoSummaryImg.src = puzzleSelectedPhotoURL;
+      puzzleSizeWrap.classList.remove('hidden');
+      puzzleStartWrap.classList.remove('hidden');
+    } else {
+      puzzleSelectedPhotoURL = null;
+      puzzlePhotoSummaryEl.classList.add('hidden');
+      puzzleSizeWrap.classList.add('hidden');
+      puzzleStartWrap.classList.add('hidden');
+    }
+  }
+  document.getElementById('deleteSelectedPuzzlePhotosBtn').addEventListener('click', function () {
+    var ids = Object.keys(puzzleSelectedIds).map(function (s) { return parseInt(s, 10); });
+    Promise.all(ids.map(deletePhotoRecord)).then(function () {
+      puzzleSelectedIds = {};
+      puzzleSelectedPhotoURL = null;
+      puzzleSizeWrap.classList.add('hidden');
+      puzzleStartWrap.classList.add('hidden');
+      getPhotosForPack(puzzleSelectedPack).then(renderPuzzlePhotoChoices);
+      loadPuzzlePacks();
+    });
+  });
+  function renderPuzzleSizeSlider() {
+    puzzleSizeSlider.min = PUZZLE_MIN_SIZE;
+    puzzleSizeSlider.max = PUZZLE_MAX_SIZE;
+    puzzleSizeSlider.value = puzzleSelectedSize;
+    puzzleSizeValueEl.textContent = t('puzzleSizeValueLabel', { n: puzzleSelectedSize });
+  }
+  puzzleSizeSlider.addEventListener('input', function () {
+    puzzleSelectedSize = parseInt(puzzleSizeSlider.value, 10);
+    puzzleSizeValueEl.textContent = t('puzzleSizeValueLabel', { n: puzzleSelectedSize });
+  });
+  renderPuzzleSizeSlider();
+  startPuzzleBtnEl.addEventListener('click', function () {
+    if (!puzzleSelectedPhotoURL) return;
+    startPuzzleGame(puzzleSelectedPhotoURL, puzzleSelectedSize);
+  });
+
+  function fitPuzzleBoard() {
+    fitBoardToScreen(puzzleBoardEl, PUZZLE_SIZE, PUZZLE_SIZE, 3,
+      [puzzleStatsBarEl, puzzleTargetWrapEl, puzzleBottomRowEl], 130, 12);
+  }
+
+  function startPuzzleGame(imgURL, size) {
+    PUZZLE_SIZE = size || PUZZLE_SIZE;
+    puzzleImgURL = imgURL;
+    puzzleMoves = 0;
+    puzzleSelectedTile = null;
+    puzzleMovesEl.textContent = '0';
+    puzzleTargetImg.src = imgURL;
+
+    var total = PUZZLE_SIZE * PUZZLE_SIZE;
+    var order;
+    do {
+      order = [];
+      for (var i = 0; i < total; i++) order.push(i);
+      shuffle(order);
+    } while (isPuzzleSolved(order));
+    puzzleTiles = order;
+
+    setupClassic.classList.add('hidden');
+    setupPhotos.classList.add('hidden');
+    setupPuzzle.classList.add('hidden');
+    document.getElementById('puzzleGameArea').classList.remove('hidden');
+    document.body.classList.add('playing');
+
+    puzzleBoardEl.style.gridTemplateColumns = 'repeat(' + PUZZLE_SIZE + ', 1fr)';
+    fitPuzzleBoard();
+    renderPuzzleBoard();
+    activeBoardResize = fitPuzzleBoard;
+  }
+
+  function renderPuzzleBoard() {
+    puzzleBoardEl.innerHTML = '';
+    puzzleTiles.forEach(function (pieceIdx, slotIdx) {
+      var row = Math.floor(pieceIdx / PUZZLE_SIZE);
+      var col = pieceIdx % PUZZLE_SIZE;
+      var btn = document.createElement('button');
+      btn.className = 'puzzle-tile' + (slotIdx === puzzleSelectedTile ? ' selected' : '');
+      btn.style.position = 'relative';
+      btn.style.overflow = 'hidden';
+      btn.style.padding = '0';
+      var img = document.createElement('img');
+      img.src = puzzleImgURL;
+      img.alt = '';
+      img.style.position = 'absolute';
+      img.style.width = (PUZZLE_SIZE * 100) + '%';
+      img.style.height = (PUZZLE_SIZE * 100) + '%';
+      img.style.maxWidth = 'none';
+      img.style.left = (-col * 100) + '%';
+      img.style.top = (-row * 100) + '%';
+      btn.appendChild(img);
+      btn.addEventListener('click', function () { onPuzzleTileClick(slotIdx); });
+      puzzleBoardEl.appendChild(btn);
+    });
+  }
+
+  function isPuzzleSolved(arr) {
+    for (var i = 0; i < arr.length; i++) if (arr[i] !== i) return false;
+    return true;
+  }
+
+  function onPuzzleTileClick(slotIdx) {
+    if (puzzleSelectedTile === null) {
+      puzzleSelectedTile = slotIdx;
+      renderPuzzleBoard();
+      return;
+    }
+    if (puzzleSelectedTile === slotIdx) {
+      puzzleSelectedTile = null;
+      renderPuzzleBoard();
+      return;
+    }
+    var tmp = puzzleTiles[puzzleSelectedTile];
+    puzzleTiles[puzzleSelectedTile] = puzzleTiles[slotIdx];
+    puzzleTiles[slotIdx] = tmp;
+    puzzleMoves++;
+    puzzleMovesEl.textContent = puzzleMoves;
+    puzzleSelectedTile = null;
+    playFlipSound();
+    renderPuzzleBoard();
+    if (isPuzzleSolved(puzzleTiles)) {
+      playMatchSound();
+      setTimeout(function () { winPuzzle(); }, 350);
+    }
+  }
+
+  function winPuzzle() {
+    var winOverlay = document.getElementById('winOverlay');
+    var winStatsText = document.getElementById('winStatsText');
+    var bestNote = document.getElementById('bestNote');
+    var winQuote = document.getElementById('winQuote');
+    winStatsText.textContent = t('winStatsTemplate', { moves: puzzleMoves });
+    bestNote.classList.add('hidden');
+    var q = nextQuote();
+    winQuote.textContent = '"' + q + '"';
+    winQuote.classList.remove('hidden');
+    winOverlay.classList.add('reveal-board');
+    resetWinCardPosition();
+    winOverlay.classList.remove('hidden');
+    celebrate();
+  }
+
+  document.getElementById('resetPuzzleBtn').addEventListener('click', function () {
+    var total = PUZZLE_SIZE * PUZZLE_SIZE;
+    puzzleTiles = [];
+    for (var i = 0; i < total; i++) puzzleTiles.push(i);
+    puzzleSelectedTile = null;
+    renderPuzzleBoard();
+    /* Solved automatically at the player's request — quietly show the
+       finished picture, with no "well done" message or celebration. */
+  });
+
+  document.getElementById('backToMenuBtnPuzzle').addEventListener('click', function () {
+    document.getElementById('puzzleGameArea').classList.add('hidden');
+    showSetup('puzzle');
+  });
+
+  /* =========================================================
+     TOWER OF HANOI
+  ========================================================= */
+  var HANOI_DISC_OPTIONS = [3, 4, 5, 6, 7, 8];
+  var HANOI_COLORS = ['#219653', '#C9A227', '#FFD400', '#8E1B3C', '#FFFFFF', '#8B5E3C', '#E63946', '#1E6FEB', '#9B30C9'];
+  var hanoiSelectedDiscs = 3;
+  var hanoiDiscCount = 3;
+  var hanoiPegs = [[], [], []];
+  var hanoiSelectedPeg = null;
+  var hanoiMoves = 0;
+  var hanoiDiscButtonsEl = document.getElementById('hanoiDiscButtons');
+  var hanoiBoardEl = document.getElementById('hanoiBoard');
+  var hanoiMovesEl = document.getElementById('hanoiMoves');
+  var hanoiMinMovesEl = document.getElementById('hanoiMinMoves');
+  var hanoiStatsBarEl = document.getElementById('hanoiStatsBar');
+  var hanoiBottomRowEl = document.getElementById('hanoiBottomRow');
+
+  function discColor(size) { return HANOI_COLORS[(size - 1) % HANOI_COLORS.length]; }
+
+  function renderHanoiDiscButtons() {
+    hanoiDiscButtonsEl.innerHTML = '';
+    HANOI_DISC_OPTIONS.forEach(function (n) {
+      var b = document.createElement('button');
+      b.className = 'diff-btn';
+      b.textContent = t('hanoiDiscsCountLabel', { n: n });
+      b.setAttribute('aria-pressed', n === hanoiSelectedDiscs ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        hanoiSelectedDiscs = n;
+        Array.prototype.forEach.call(hanoiDiscButtonsEl.children, function (c) { c.setAttribute('aria-pressed', 'false'); });
+        b.setAttribute('aria-pressed', 'true');
+      });
+      hanoiDiscButtonsEl.appendChild(b);
+    });
+  }
+  renderHanoiDiscButtons();
+  document.getElementById('startHanoiBtn').addEventListener('click', function () {
+    startHanoiGame(hanoiSelectedDiscs);
+  });
+
+  function fitHanoiBoard() {
+    var reserved = 0;
+    [hanoiStatsBarEl, hanoiBottomRowEl].forEach(function (el) { if (el) reserved += el.getBoundingClientRect().height; });
+    var wrapEl = document.querySelector('.wrap');
+    if (wrapEl) {
+      var cs = getComputedStyle(wrapEl);
+      reserved += parseFloat(cs.paddingTop || 0) + parseFloat(cs.paddingBottom || 0);
+    }
+    reserved += 30; // the connected base plank underneath the pegs
+    var availH = Math.max(140, window.innerHeight - reserved - 60);
+    var pegHeight = Math.max(90, Math.min(260, availH));
+    var discH = Math.max(12, Math.min(30, Math.floor((pegHeight - 14) / hanoiDiscCount) - 4));
+    hanoiBoardEl.style.setProperty('--hanoi-h', pegHeight + 'px');
+    hanoiBoardEl.style.setProperty('--disc-h', discH + 'px');
+  }
+
+  function renderHanoiBoard() {
+    hanoiBoardEl.innerHTML = '';
+    var pegsWrap = document.createElement('div');
+    pegsWrap.className = 'hanoi-pegs';
+    hanoiPegs.forEach(function (stack, pegIdx) {
+      var peg = document.createElement('div');
+      peg.className = 'hanoi-peg' + (pegIdx === hanoiSelectedPeg ? ' selected' : '');
+      peg.setAttribute('role', 'button');
+      peg.setAttribute('aria-label', t('hanoiPegAria', { n: pegIdx + 1 }));
+      peg.addEventListener('click', function () { onHanoiPegClick(pegIdx); });
+      stack.forEach(function (discSize) {
+        var d = document.createElement('div');
+        d.className = 'hanoi-disc';
+        var widthPct = 28 + (discSize / hanoiDiscCount) * 67;
+        d.style.setProperty('--disc-w', widthPct + '%');
+        d.style.background = discColor(discSize);
+        d.textContent = discSize;
+        peg.appendChild(d);
+      });
+      pegsWrap.appendChild(peg);
+    });
+    hanoiBoardEl.appendChild(pegsWrap);
+    var base = document.createElement('div');
+    base.className = 'hanoi-base';
+    hanoiBoardEl.appendChild(base);
+  }
+
+  function onHanoiPegClick(pegIdx) {
+    if (hanoiSelectedPeg === null) {
+      if (hanoiPegs[pegIdx].length === 0) return;
+      hanoiSelectedPeg = pegIdx;
+      renderHanoiBoard();
+      return;
+    }
+    if (hanoiSelectedPeg === pegIdx) {
+      hanoiSelectedPeg = null;
+      renderHanoiBoard();
+      return;
+    }
+    var fromStack = hanoiPegs[hanoiSelectedPeg];
+    var toStack = hanoiPegs[pegIdx];
+    var moving = fromStack[fromStack.length - 1];
+    var topDest = toStack[toStack.length - 1];
+    hanoiSelectedPeg = null;
+    if (topDest !== undefined && topDest < moving) {
+      playMismatchSound();
+      renderHanoiBoard();
+      return;
+    }
+    fromStack.pop();
+    toStack.push(moving);
+    hanoiMoves++;
+    hanoiMovesEl.textContent = hanoiMoves;
+    playFlipSound();
+    renderHanoiBoard();
+    if (hanoiPegs[hanoiPegs.length - 1].length === hanoiDiscCount) {
+      playMatchSound();
+      setTimeout(function () { winHanoi(); }, 350);
+    }
+  }
+
+  function winHanoi() {
+    var winOverlay = document.getElementById('winOverlay');
+    var winStatsText = document.getElementById('winStatsText');
+    var bestNote = document.getElementById('bestNote');
+    var winQuote = document.getElementById('winQuote');
+    winStatsText.textContent = t('winStatsTemplate', { moves: hanoiMoves });
+    var improved = saveBestIfBetter('hanoi_' + hanoiDiscCount, hanoiMoves);
+    if (improved) { bestNote.textContent = t('bestNoteLabel'); bestNote.classList.remove('hidden'); }
+    else bestNote.classList.add('hidden');
+    var q = nextQuote();
+    winQuote.textContent = '"' + q + '"';
+    winQuote.classList.remove('hidden');
+    winOverlay.classList.remove('reveal-board');
+    resetWinCardPosition();
+    winOverlay.classList.remove('hidden');
+    celebrate();
+  }
+
+  function startHanoiGame(n) {
+    hanoiDiscCount = n;
+    hanoiPegs = [[], [], []];
+    for (var i = n; i >= 1; i--) hanoiPegs[0].push(i);
+    hanoiSelectedPeg = null;
+    hanoiMoves = 0;
+    hanoiMovesEl.textContent = '0';
+    hanoiMinMovesEl.textContent = String(Math.pow(2, n) - 1);
+
+    setupClassic.classList.add('hidden');
+    setupPhotos.classList.add('hidden');
+    setupPuzzle.classList.add('hidden');
+    setupHanoi.classList.add('hidden');
+    document.getElementById('hanoiGameArea').classList.remove('hidden');
+    document.body.classList.add('playing');
+
+    fitHanoiBoard();
+    renderHanoiBoard();
+    activeBoardResize = fitHanoiBoard;
+  }
+
+  document.getElementById('resetHanoiBtn').addEventListener('click', function () {
+    startHanoiGame(hanoiDiscCount);
+  });
+  document.getElementById('backToMenuBtnHanoi').addEventListener('click', function () {
+    document.getElementById('hanoiGameArea').classList.add('hidden');
+    showSetup('hanoi');
+  });
+
+  /* =========================================================
+     GAME STATE
+  ========================================================= */
+  var boardEl = document.getElementById('board');
+  var gameArea = document.getElementById('gameArea');
+  var statMoves = document.getElementById('statMoves');
+  var statPairs = document.getElementById('statPairs');
+  var quoteBox = document.getElementById('quoteBox');
+  var classicStatsBarEl = document.getElementById('classicStatsBar');
+  var classicBottomRowEl = document.getElementById('classicBottomRow');
+
+  var cards = [];
+  var flipped = [];
+  var matchedCount = 0;
+  var totalPairs = 0;
+  var moves = 0;
+  var lockBoard = false;
+  var activeDiffKey = null;
+
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+  function chooseCols(totalCards) {
+    var target = Math.sqrt(totalCards);
+    var perfect = [];
+    var okImperfect = [];
+    for (var c = 3; c <= 8; c++) {
+      var rem = totalCards % c;
+      if (rem === 1 && totalCards > c) continue;
+      if (rem === 0) perfect.push(c); else okImperfect.push(c);
+    }
+    var pool = perfect.length ? perfect : okImperfect;
+    if (pool.length === 0) return 4;
+    var best = pool[0], bestDiff = Math.abs(pool[0] - target);
+    pool.forEach(function (c) { var d = Math.abs(c - target); if (d < bestDiff) { bestDiff = d; best = c; } });
+    return best;
+  }
+  function buildBoard(items, diffKey) {
+    activeDiffKey = diffKey;
+    totalPairs = items.length;
+    matchedCount = 0; moves = 0; flipped = []; lockBoard = false; lastQuoteText = '';
+    statMoves.textContent = '0';
+    statPairs.textContent = '0/' + totalPairs;
+    quoteBox.classList.remove('show'); quoteBox.textContent = '';
+
+    var deck = [];
+    items.forEach(function (item, i) {
+      deck.push({ pairId: i, type: item.type, content: item.content });
+      deck.push({ pairId: i, type: item.type, content: item.content });
+    });
+    shuffle(deck);
+    cards = deck.map(function (c) { return Object.assign({ matched: false }, c); });
+
+    var cols = chooseCols(cards.length);
+    var rows = Math.ceil(cards.length / cols);
+
+    gameArea.classList.remove('hidden');
+    document.body.classList.add('playing');
+
+    boardEl.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+    function fitClassicBoard() {
+      fitBoardToScreen(boardEl, cols, rows, 12,
+        [classicStatsBarEl, quoteBox, classicBottomRowEl], 120, 50);
+    }
+    fitClassicBoard();
+    activeBoardResize = fitClassicBoard;
+
+    boardEl.innerHTML = '';
+    cards.forEach(function (c, idx) {
+      var btn = document.createElement('button');
+      btn.className = 'card';
+      btn.setAttribute('aria-label', t('cardAria', { n: idx + 1 }));
+      var isWord = c.type === 'icon' && segmentGraphemes(c.content).length > 2;
+      var frontClass = c.type === 'icon' ? ('card-front-face emoji-face' + (isWord ? ' word-face' : '')) : 'card-front-face';
+      var frontContent = c.type === 'icon' ? (isWord ? renderWordCardContent(c.content) : escapeHtml(c.content)) : '<img src="' + c.content + '" alt="">';
+      btn.innerHTML =
+        '<div class="card-inner">' +
+          '<div class="card-face card-back-face"><svg viewBox="0 0 64 64" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"><circle cx="32" cy="32" r="20"/></svg></div>' +
+          '<div class="card-face ' + frontClass + '">' + frontContent + '</div>' +
+        '</div>';
+      btn.addEventListener('click', function () { onCardClick(idx, btn); });
+      boardEl.appendChild(btn);
+    });
+  }
+
+  function onCardClick(idx, el) {
+    if (lockBoard) return;
+    var c = cards[idx];
+    if (c.matched || el.classList.contains('flipped')) return;
+    if (flipped.length === 2) return;
+
+    playFlipSound();
+    el.classList.add('flipped');
+    flipped.push({ idx: idx, el: el });
+
+    if (flipped.length === 2) {
+      moves++; statMoves.textContent = moves;
+      var a = flipped[0], b = flipped[1];
+      if (cards[a.idx].pairId === cards[b.idx].pairId) {
+        cards[a.idx].matched = true; cards[b.idx].matched = true;
+        a.el.classList.add('matched'); b.el.classList.add('matched');
+        matchedCount++;
+        statPairs.textContent = matchedCount + '/' + totalPairs;
+        flipped = [];
+        playMatchSound();
+        showQuote();
+        if (matchedCount === totalPairs) { setTimeout(winGame, 500); }
+      } else {
+        lockBoard = true;
+        setTimeout(function () {
+          playMismatchSound();
+          a.el.classList.remove('flipped'); b.el.classList.remove('flipped');
+          flipped = []; lockBoard = false;
+        }, 900);
+      }
+    }
+  }
+
+  function showQuote() {
+    quoteBox.classList.remove('show');
+    var q = nextQuote();
+    lastQuoteText = q;
+    setTimeout(function () { quoteBox.textContent = '"' + q + '"'; quoteBox.classList.add('show'); }, 120);
+  }
+
+  function bestKey(diffKey) { return 'mw_best_' + diffKey; }
+  function loadBest(diffKey) {
+    try { var raw = localStorage.getItem(bestKey(diffKey)); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+  }
+  function saveBestIfBetter(diffKey, m) {
+    if (!diffKey) return null;
+    var best = loadBest(diffKey);
+    var isBetter = !best || m < best.moves;
+    if (isBetter) { try { localStorage.setItem(bestKey(diffKey), JSON.stringify({ moves: m })); } catch (e) {} }
+    return isBetter;
+  }
+
+  function celebrate() {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+    var pieces = ['🎉', '✨', '⭐', '🌟', '🎊'];
+    for (var i = 0; i < 22; i++) {
+      (function () {
+        var span = document.createElement('span');
+        span.className = 'confetti-piece';
+        span.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+        span.style.left = Math.random() * 100 + 'vw';
+        var duration = 1.8 + Math.random() * 1.4;
+        span.style.animationDuration = duration + 's';
+        span.style.animationDelay = (Math.random() * 0.4) + 's';
+        document.body.appendChild(span);
+        setTimeout(function () { span.remove(); }, (duration + 0.5) * 1000);
+      })();
+    }
+  }
+
+  function winGame() {
+    var winOverlay = document.getElementById('winOverlay');
+    var winStatsText = document.getElementById('winStatsText');
+    var bestNote = document.getElementById('bestNote');
+    var winQuote = document.getElementById('winQuote');
+    winStatsText.textContent = t('winStatsTemplate', { moves: moves });
+    var improved = saveBestIfBetter(activeDiffKey, moves);
+    if (activeDiffKey && improved) { bestNote.textContent = t('bestNoteLabel'); bestNote.classList.remove('hidden'); }
+    else bestNote.classList.add('hidden');
+    if (lastQuoteText) { winQuote.textContent = '"' + lastQuoteText + '"'; winQuote.classList.remove('hidden'); }
+    else winQuote.classList.add('hidden');
+    winOverlay.classList.remove('reveal-board');
+    resetWinCardPosition();
+    winOverlay.classList.remove('hidden');
+    celebrate();
+  }
+
+  document.getElementById('playAgainBtn').addEventListener('click', function () {
+    document.getElementById('winOverlay').classList.add('hidden');
+    if (currentMode === 'classic') startClassicGame();
+    else if (currentMode === 'photos') startPhotosGame();
+    else if (currentMode === 'puzzle') startPuzzleGame(puzzleImgURL);
+    else if (currentMode === 'hanoi') startHanoiGame(hanoiDiscCount);
+  });
+  document.getElementById('changeModeBtn').addEventListener('click', function () {
+    document.getElementById('winOverlay').classList.add('hidden');
+    showSetup(currentMode);
+  });
+  document.getElementById('backToMenuBtn').addEventListener('click', function () { showSetup(currentMode); });
+
+  function startClassicGame() {
+    applyCustomQuotes();
+    var diff = DIFFS.filter(function (d) { return d.key === selectedDiff; })[0];
+    var pool = shuffle(ICONS.slice()).slice(0, diff.pairs);
+    var items = pool.map(function (svg) { return { type: 'icon', content: svg }; });
+    setupClassic.classList.add('hidden'); setupPhotos.classList.add('hidden');
+    buildBoard(items, diff.key);
+  }
+  document.getElementById('startClassicBtn').addEventListener('click', startClassicGame);
+
+  function revokeActiveRoundURLs() { activeRoundURLs.forEach(function (u) { URL.revokeObjectURL(u); }); activeRoundURLs = []; }
+
+  function startPhotosGame() {
+    if (!selectedPackName) return;
+    applyCustomQuotes();
+    getPhotosForPack(selectedPackName).then(function (records) {
+      if (records.length === 0) return;
+      var k = Math.min(selectedRoundSize || records.length, records.length);
+      var chosen = shuffle(records.slice()).slice(0, k);
+      revokeActiveRoundURLs();
+      var items = chosen.map(function (r) {
+        var url = URL.createObjectURL(r.blob);
+        activeRoundURLs.push(url);
+        return { type: 'img', content: url };
+      });
+      setupClassic.classList.add('hidden'); setupPhotos.classList.add('hidden');
+      buildBoard(items, null);
+    }).catch(function (err) { console.error(err); });
+  }
+  startPhotosBtn.addEventListener('click', startPhotosGame);
+
+  /* =========================================================
+     INITIAL RENDER
+  ========================================================= */
+  applyStaticTranslations();
+
+})();
+</script>
+</body>
+</html>
