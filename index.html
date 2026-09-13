@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Μνήμη &amp; Σοφία</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Μνήμη &amp; Σοφία">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -421,7 +429,7 @@
   /* board */
   .board {
     display: grid;
-    gap: 12px;
+    gap: 4px;
     margin: 0 auto 20px;
   }
   .card {
@@ -468,7 +476,18 @@
     border-color: var(--success);
     box-shadow: 0 0 0 2px var(--success) inset;
   }
-  .card-front-face.emoji-face { font-size: clamp(2.2rem, 9vw, 3.4rem); line-height: 1; }
+  .card-front-face.emoji-face {
+    font-size: clamp(2.2rem, 9vw, 3.4rem);
+    line-height: 1.15;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    text-align: center;
+    padding: 6px;
+    font-weight: 700;
+  }
   .card-front-face img { width: 100%; height: 100%; object-fit: cover; }
   .card-back-face svg { width: 30%; height: 30%; opacity: 0.6; }
 
@@ -3560,6 +3579,19 @@
     }
     return arr;
   }
+  function iconTextLang(text) {
+    return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(text || '') ? 'el' : 'en';
+  }
+  function iconFontSizeFor(text) {
+    var len = Array.from(text || '').length;
+    if (len <= 2) return 'clamp(2.2rem, 9vw, 3.4rem)';
+    if (len <= 4) return 'clamp(1.6rem, 7vw, 2.4rem)';
+    if (len <= 6) return 'clamp(1.2rem, 5.5vw, 1.8rem)';
+    if (len <= 9) return 'clamp(0.95rem, 4.4vw, 1.4rem)';
+    if (len <= 13) return 'clamp(0.8rem, 3.6vw, 1.15rem)';
+    return 'clamp(0.7rem, 3vw, 0.95rem)';
+  }
+
   function chooseCols(totalCards) {
     var target = Math.sqrt(totalCards);
     var perfect = [];
@@ -3599,7 +3631,7 @@
 
     boardEl.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
     function fitClassicBoard() {
-      fitBoardToScreen(boardEl, cols, rows, 12,
+      fitBoardToScreen(boardEl, cols, rows, 4,
         [classicStatsBarEl, quoteBox, classicBottomRowEl], 120, 50);
     }
     fitClassicBoard();
@@ -3611,10 +3643,11 @@
       btn.className = 'card';
       btn.setAttribute('aria-label', t('cardAria', { n: idx + 1 }));
       var frontClass = c.type === 'icon' ? 'card-front-face emoji-face' : 'card-front-face';
+      var frontStyle = c.type === 'icon' ? ' style="font-size:' + iconFontSizeFor(c.content) + '" lang="' + iconTextLang(c.content) + '"' : '';
       btn.innerHTML =
         '<div class="card-inner">' +
           '<div class="card-face card-back-face"><svg viewBox="0 0 64 64" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"><circle cx="32" cy="32" r="20"/></svg></div>' +
-          '<div class="card-face ' + frontClass + '">' + (c.type === 'icon' ? c.content : '<img src="' + c.content + '" alt="">') + '</div>' +
+          '<div class="card-face ' + frontClass + '"' + frontStyle + '>' + (c.type === 'icon' ? c.content : '<img src="' + c.content + '" alt="">') + '</div>' +
         '</div>';
       btn.addEventListener('click', function () { onCardClick(idx, btn); });
       boardEl.appendChild(btn);
