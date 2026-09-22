@@ -476,8 +476,30 @@
     border-color: var(--success);
     box-shadow: 0 0 0 2px var(--success) inset;
   }
-  .card-front-face.emoji-face {
-    font-size: clamp(2.2rem, 9vw, 3.4rem);
+  .symbol-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55), 0 0 3px rgba(0, 0, 0, 0.35);
+    font-family: var(--font-ui);
+    font-weight: 700;
+    box-sizing: border-box;
+  }
+  .symbol-badge-round {
+    width: 74%;
+    height: 74%;
+    border-radius: 50%;
+  }
+  .symbol-badge-pill {
+    width: 90%;
+    height: 84%;
+    border-radius: 16px;
+    padding: 6px;
+  }
+  .symbol-badge span {
+    display: block;
+    width: 100%;
     line-height: 1.15;
     white-space: normal;
     word-break: normal;
@@ -485,10 +507,29 @@
     hyphens: auto;
     -webkit-hyphens: auto;
     text-align: center;
-    padding: 6px;
-    font-weight: 700;
   }
-  .card-front-face img { width: 100%; height: 100%; object-fit: cover; }
+  .card-front-face.photo-face { padding: 0; }
+  .card-front-face.photo-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.55), inset 0 0 16px rgba(0, 0, 0, 0.18);
+  }
+  .emoji-pick-btn {
+    font-size: 1.9rem;
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    border: 1.5px solid var(--card-back);
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s, border-color 0.15s;
+  }
+  .emoji-pick-btn:hover { border-color: var(--gold); }
+  .emoji-pick-btn-added { transform: scale(1.25); border-color: var(--success); }
   .card-back-face svg { width: 30%; height: 30%; opacity: 0.6; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -826,8 +867,6 @@
     max-width: 100%;
     border-radius: 999px;
     margin-bottom: 0;
-    border: 2px solid rgba(0, 0, 0, 0.15);
-    box-shadow: 0 2px 4px var(--shadow);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1012,6 +1051,12 @@
 
       <label class="field-label" id="iconPackNameLabel" for="iconPackNameInput"></label>
       <input type="text" id="iconPackNameInput" class="text-input">
+
+      <p class="center" style="margin:18px 0 10px;color:var(--ink-soft)" id="emojiPickerHeading"></p>
+      <div class="field-row" id="emojiCategoryTabs"></div>
+      <div id="emojiPickerGrid" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px;max-height:230px;overflow-y:auto;padding:6px;"></div>
+
+      <p class="upload-note" id="customIconsLabel" style="margin-top:18px;"></p>
       <textarea id="customIconsNew" rows="3" style="width:100%;font-family:var(--font-ui);font-size:1.3rem;padding:10px;border-radius:10px;border:1.5px solid var(--card-back);background:var(--bg);color:var(--ink);resize:vertical;"></textarea>
       <div class="center mt16">
         <button class="primary-btn" id="saveIconPackBtn"></button>
@@ -1276,6 +1321,8 @@
       iconPackNamePlaceholder: "π.χ. Ζώα",
       customIconsPlaceholder: "🦋 🐢 🦉 🌸 ...",
       saveIconPackBtnLabel: "Αποθήκευση πακέτου",
+      emojiPickerHeading: "Πάτα για να προσθέσεις σύμβολα",
+      customIconsLabel: "Ή γράψε/επικόλλησε εδώ (σύμβολα ή λέξεις, χωρισμένα με κενό):",
       iconPacksHeading: "Τα πακέτα συμβόλων σου",
       iconPacksEmptyNote: "Χρησιμοποιείται το βασικό σετ συμβόλων. Φτιάξε το πρώτο σου πακέτο από πάνω.",
       iconPackSymbolsLabel: "Τα σύμβολα σε αυτό το πακέτο — πάτα ένα για να το σβήσεις:",
@@ -1419,6 +1466,8 @@
       iconPackNamePlaceholder: "e.g. Animals",
       customIconsPlaceholder: "🦋 🐢 🦉 🌸 ...",
       saveIconPackBtnLabel: "Save pack",
+      emojiPickerHeading: "Tap to add symbols",
+      customIconsLabel: "Or type/paste here (symbols or words, separated by spaces):",
       iconPacksHeading: "Your symbol packs",
       iconPacksEmptyNote: "Using the default symbol set. Create your first pack above.",
       iconPackSymbolsLabel: "Symbols in this pack — tap one to delete it:",
@@ -2072,6 +2121,8 @@
     setPlaceholder('iconPackNameInput', 'iconPackNamePlaceholder');
     setPlaceholder('customIconsNew', 'customIconsPlaceholder');
     setText('saveIconPackBtn', 'saveIconPackBtnLabel');
+    setText('emojiPickerHeading', 'emojiPickerHeading');
+    setText('customIconsLabel', 'customIconsLabel');
     setText('iconPacksHeading', 'iconPacksHeading');
     setText('menuQuotesLabel', 'quotesSummary');
     setText('quotesInstructions', 'quotesInstructions');
@@ -2768,6 +2819,66 @@
   var iconPackListEl = document.getElementById('iconPackList');
   var iconPackListNote = document.getElementById('iconPackListNote');
 
+  /* =========================================================
+     VISUAL EMOJI PICKER
+     Lets someone build a symbol pack by tapping pictures instead
+     of typing/finding emoji on the keyboard.
+  ========================================================= */
+  var EMOJI_LIBRARY = {
+    'Ζώα': ['🐅', '🦍', '🦓', '🐆', '🦣', '🐘', '🐪', '🦏', '🦘', '🦒', '🦬', '🐃', '🐂', '🐎', '🐏', '🦙', '🐕', '🦁', '🐯', '🦌', '🦡', '🦨', '🦥', '🦦', '🐨', '🐼', '🐰', '🐭', '🦊', '🐻'],
+    'Πουλιά': ['🦩', '🦢', '🦜', '🐓', '🦤', '🦃', '🕊️', '🦅', '🦉', '🦆', '🐧', '🦚', '🐦', '🐥', '🐤', '🐣'],
+    'Ψάρια': ['🐟', '🐠', '🐡', '🦈', '🐙', '🦑', '🦀', '🦞', '🦐', '🐚', '🐬', '🐳', '🐋', '🦭', '🐢'],
+    'Λουλούδια': ['🌷', '💐', '🌹', '🥀', '🌺', '🌸', '🌻', '🌼', '🏵️', '🪷'],
+    'Φρούτα': ['🍎', '🍐', '🍊', '🍋', '🍉', '🍇', '🍓', '🫐', '🍈', '🍒', '🍑', '🥭', '🥝', '🥑', '🍍', '🍌'],
+    'Έντομα': ['🐝', '🦋', '🐞', '🐜', '🕷️', '🦗', '🐛', '🪲', '🐌', '🦟'],
+    'Οχήματα': ['🚗', '🚕', '🚙', '🚌', '🚓', '🚑', '🚒', '🚚', '🏎️', '🚲', '🛵', '🏍️', '✈️', '🚁', '🚂', '🚢', '⛵', '🚀'],
+    'Φύση': ['☀️', '🌙', '⭐', '🌈', '⛅', '❄️', '🔥', '🌊', '🍀', '🌵', '🌳', '🍄'],
+    'Χαρά': ['❤️', '😊', '🎉', '🎈', '🎁', '🏆', '🎵', '☕']
+  };
+  var EMOJI_CATEGORIES = Object.keys(EMOJI_LIBRARY);
+  var currentEmojiCategory = EMOJI_CATEGORIES[0];
+  var emojiCategoryTabsEl = document.getElementById('emojiCategoryTabs');
+  var emojiPickerGridEl = document.getElementById('emojiPickerGrid');
+
+  function renderEmojiCategoryTabs() {
+    emojiCategoryTabsEl.innerHTML = '';
+    EMOJI_CATEGORIES.forEach(function (cat) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'diff-btn';
+      b.textContent = cat;
+      b.setAttribute('aria-pressed', cat === currentEmojiCategory ? 'true' : 'false');
+      b.addEventListener('click', function () {
+        currentEmojiCategory = cat;
+        renderEmojiCategoryTabs();
+        renderEmojiPickerGrid();
+      });
+      emojiCategoryTabsEl.appendChild(b);
+    });
+  }
+  function renderEmojiPickerGrid() {
+    emojiPickerGridEl.innerHTML = '';
+    (EMOJI_LIBRARY[currentEmojiCategory] || []).forEach(function (sym) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'emoji-pick-btn';
+      b.textContent = sym;
+      b.setAttribute('aria-label', sym);
+      b.addEventListener('click', function () {
+        var cur = customIconsNew.value.trim();
+        var already = cur.split(/\s+/).filter(Boolean);
+        if (already.indexOf(sym) === -1) {
+          customIconsNew.value = cur ? cur + ' ' + sym : sym;
+        }
+        b.classList.add('emoji-pick-btn-added');
+        setTimeout(function () { b.classList.remove('emoji-pick-btn-added'); }, 300);
+      });
+      emojiPickerGridEl.appendChild(b);
+    });
+  }
+  renderEmojiCategoryTabs();
+  renderEmojiPickerGrid();
+
   function loadIconPacks() {
     try {
       var raw = localStorage.getItem('mw_icon_packs');
@@ -3409,6 +3520,30 @@
 
   function discColor(size) { return HANOI_COLORS[(size - 1) % HANOI_COLORS.length]; }
 
+  // Lightens (positive percent) or darkens (negative percent) a hex color.
+  // Shared by the Hanoi discs and the Classic-mode symbol medallions to give
+  // both a consistent "glossy chip" look.
+  function shadeColor(hex, percent) {
+    var num = parseInt(hex.replace('#', ''), 16);
+    var amt = Math.round(2.55 * percent);
+    var R = (num >> 16) + amt;
+    var G = (num >> 8 & 0x00FF) + amt;
+    var B = (num & 0x0000FF) + amt;
+    R = R > 255 ? 255 : R < 0 ? 0 : R;
+    G = G > 255 ? 255 : G < 0 ? 0 : G;
+    B = B > 255 ? 255 : B < 0 ? 0 : B;
+    return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
+  }
+  // Builds inline CSS for a glossy, three-dimensional-looking colored disc/badge:
+  // a light-to-dark gradient plus a soft highlight and shadow.
+  function glossyChipStyle(baseColor) {
+    var light = shadeColor(baseColor, 38);
+    var dark = shadeColor(baseColor, -32);
+    return 'background:linear-gradient(155deg,' + light + ' 0%,' + baseColor + ' 55%,' + dark + ' 100%);' +
+      'box-shadow:inset 0 2px 3px rgba(255,255,255,0.55),inset 0 -4px 5px rgba(0,0,0,0.22),0 3px 6px rgba(0,0,0,0.28);' +
+      'border:1px solid ' + shadeColor(baseColor, -15) + ';';
+  }
+
   function renderHanoiDiscButtons() {
     hanoiDiscButtonsEl.innerHTML = '';
     HANOI_DISC_OPTIONS.forEach(function (n) {
@@ -3460,7 +3595,7 @@
         d.className = 'hanoi-disc';
         var widthPct = 28 + (discSize / hanoiDiscCount) * 67;
         d.style.setProperty('--disc-w', widthPct + '%');
-        d.style.background = discColor(discSize);
+        d.style.cssText += glossyChipStyle(discColor(discSize));
         d.textContent = discSize;
         peg.appendChild(d);
       });
@@ -3582,6 +3717,76 @@
   function iconTextLang(text) {
     return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(text || '') ? 'el' : 'en';
   }
+
+  // Modern-Greek syllabification: browsers' built-in "hyphens: auto" support for
+  // Greek is unreliable (notably in Chrome), so we work out the syllable breaks
+  // ourselves and insert invisible soft hyphens (\u00AD) — the browser only shows
+  // a hyphen and breaks the line there if the word genuinely doesn't fit.
+  var GREEK_VOWELS = 'αεηιουωάέήίόύώϊϋΐΰΑΕΗΙΟΥΩΆΈΉΊΌΎΏΪΫ';
+  var GREEK_DIPHTHONGS = [
+    'αι', 'ει', 'οι', 'υι', 'αυ', 'ευ', 'ηυ', 'ου', 'ωυ',
+    'αί', 'εί', 'οί', 'υί', 'αύ', 'εύ', 'ηύ', 'ού',
+    'άι', 'έι', 'όι', 'ύι', 'άυ', 'έυ', 'ήυ', 'όυ'
+  ];
+  // Consonant pairs that always stay together, wherever they fall in the word
+  // (represent a single modern-Greek sound), or that can begin a Greek syllable.
+  var GREEK_KEEP_TOGETHER = [
+    'μπ', 'ντ', 'γκ', 'γγ', 'τσ', 'τζ',
+    'βλ', 'βρ', 'γλ', 'γρ', 'γν', 'δρ', 'θλ', 'θρ', 'κλ', 'κρ', 'κτ', 'κν', 'μν',
+    'πλ', 'πρ', 'πτ', 'πν', 'σβ', 'σγ', 'σθ', 'σκ', 'σλ', 'σμ', 'σν', 'σπ',
+    'στ', 'σφ', 'σχ', 'τρ', 'φλ', 'φρ', 'φθ', 'φτ', 'χλ', 'χρ', 'χθ', 'χν'
+  ];
+  function isGreekVowel(ch) { return GREEK_VOWELS.indexOf(ch) !== -1; }
+  function syllabifyGreek(word) {
+    if (!word || word.length < 5) return word;
+    var chars = word.split('');
+    var n = chars.length;
+    var vowelPos = [];
+    for (var i = 0; i < n; i++) { if (isGreekVowel(chars[i])) vowelPos.push(i); }
+    if (vowelPos.length < 2) return word;
+
+    // Each nucleus is one vowel, or a diphthong pair treated as one sound.
+    var nuclei = []; // { start, end }
+    var idx = 0;
+    while (idx < vowelPos.length) {
+      var p = vowelPos[idx];
+      if (idx + 1 < vowelPos.length && vowelPos[idx + 1] === p + 1 &&
+          GREEK_DIPHTHONGS.indexOf((chars[p] + chars[p + 1]).toLowerCase()) !== -1) {
+        nuclei.push({ start: p, end: p + 1 });
+        idx += 2;
+      } else {
+        nuclei.push({ start: p, end: p });
+        idx += 1;
+      }
+    }
+    if (nuclei.length < 2) return word;
+
+    var breakPoints = [];
+    for (var m = 0; m < nuclei.length - 1; m++) {
+      var endOfThis = nuclei[m].end;
+      var startOfNext = nuclei[m + 1].start;
+      var between = chars.slice(endOfThis + 1, startOfNext).join('').toLowerCase();
+      var consCount = between.length;
+      if (consCount === 0 || consCount === 1) {
+        // No consonant, or a single consonant: it joins the FOLLOWING syllable,
+        // so the break falls right after the vowel that just ended.
+        breakPoints.push(endOfThis + 1);
+      } else {
+        var lastTwo = between.slice(-2);
+        breakPoints.push(GREEK_KEEP_TOGETHER.indexOf(lastTwo) !== -1 ? startOfNext - 2 : startOfNext - 1);
+      }
+    }
+
+    var result = '';
+    var last = 0;
+    breakPoints.forEach(function (bp) {
+      result += chars.slice(last, bp).join('') + '\u00AD';
+      last = bp;
+    });
+    result += chars.slice(last).join('');
+    return result;
+  }
+
   function iconFontSizeFor(text) {
     var len = Array.from(text || '').length;
     if (len <= 2) return 'clamp(2.2rem, 9vw, 3.4rem)';
@@ -3591,6 +3796,9 @@
     if (len <= 13) return 'clamp(0.8rem, 3.6vw, 1.15rem)';
     return 'clamp(0.7rem, 3vw, 0.95rem)';
   }
+
+  var CARD_BADGE_COLORS = ['#2E9E6B', '#D9A62E', '#3E8FCC', '#C0562F', '#9B59B0', '#D64550', '#2FA6A6', '#C9922E'];
+  function cardBadgeColorFor(i) { return CARD_BADGE_COLORS[i % CARD_BADGE_COLORS.length]; }
 
   function chooseCols(totalCards) {
     var target = Math.sqrt(totalCards);
@@ -3642,12 +3850,25 @@
       var btn = document.createElement('button');
       btn.className = 'card';
       btn.setAttribute('aria-label', t('cardAria', { n: idx + 1 }));
-      var frontClass = c.type === 'icon' ? 'card-front-face emoji-face' : 'card-front-face';
-      var frontStyle = c.type === 'icon' ? ' style="font-size:' + iconFontSizeFor(c.content) + '" lang="' + iconTextLang(c.content) + '"' : '';
+      var frontClass, frontContent;
+      if (c.type === 'icon') {
+        frontClass = 'card-face card-front-face';
+        var isWord = Array.from(c.content || '').length > 2;
+        var badgeClass = 'symbol-badge ' + (isWord ? 'symbol-badge-pill' : 'symbol-badge-round');
+        var badgeStyle = glossyChipStyle(cardBadgeColorFor(c.pairId));
+        var badgeLang = iconTextLang(c.content);
+        var displayText = (isWord && badgeLang === 'el') ? syllabifyGreek(c.content) : c.content;
+        frontContent = '<div class="' + badgeClass + '" style="' + badgeStyle + '">' +
+          '<span lang="' + badgeLang + '" style="font-size:' + iconFontSizeFor(c.content) + '">' + displayText + '</span>' +
+          '</div>';
+      } else {
+        frontClass = 'card-face card-front-face photo-face';
+        frontContent = '<img src="' + c.content + '" alt="">';
+      }
       btn.innerHTML =
         '<div class="card-inner">' +
           '<div class="card-face card-back-face"><svg viewBox="0 0 64 64" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"><circle cx="32" cy="32" r="20"/></svg></div>' +
-          '<div class="card-face ' + frontClass + '"' + frontStyle + '>' + (c.type === 'icon' ? c.content : '<img src="' + c.content + '" alt="">') + '</div>' +
+          '<div class="' + frontClass + '">' + frontContent + '</div>' +
         '</div>';
       btn.addEventListener('click', function () { onCardClick(idx, btn); });
       boardEl.appendChild(btn);
