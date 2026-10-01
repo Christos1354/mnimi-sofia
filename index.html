@@ -504,8 +504,8 @@
     white-space: normal;
     word-break: normal;
     overflow-wrap: break-word;
-    hyphens: auto;
-    -webkit-hyphens: auto;
+    hyphens: manual;
+    -webkit-hyphens: manual;
     text-align: center;
   }
   .card-front-face.photo-face { padding: 0; }
@@ -1932,6 +1932,24 @@
     if (!soundOn) return;
     if (customMatchLoaded) { try { customMatchAudio.currentTime = 0; customMatchAudio.play().catch(function () {}); } catch (e) {} return; }
     playTone(660, 0.18, 0, 1.4); playTone(880, 0.24, 0.1, 1.4);
+  }
+  // Bigger fanfare for actually WINNING (not just a regular match): six quick,
+  // distinct little beeps spread across about a second and a quarter.
+  function playWinChime() {
+    if (!soundOn) return;
+    var offsets = [0, 0.22, 0.44, 0.66, 0.88, 1.1];
+    if (customMatchLoaded) {
+      offsets.forEach(function (delay) {
+        setTimeout(function () {
+          try { customMatchAudio.currentTime = 0; customMatchAudio.play().catch(function () {}); } catch (e) {}
+        }, delay * 1000);
+      });
+      return;
+    }
+    var freqs = [660, 880, 660, 880, 660, 880];
+    freqs.forEach(function (f, i) {
+      playTone(f, 0.16, offsets[i], 1.4);
+    });
   }
   function playMismatchSound() { playTone(220, 0.2, 0, 1.0); }
 
@@ -3465,7 +3483,7 @@
     playFlipSound();
     renderPuzzleBoard();
     if (isPuzzleSolved(puzzleTiles)) {
-      playMatchSound();
+      playWinChime();
       setTimeout(function () { winPuzzle(); }, 350);
     }
   }
@@ -3636,7 +3654,7 @@
     playFlipSound();
     renderHanoiBoard();
     if (hanoiPegs[hanoiPegs.length - 1].length === hanoiDiscCount) {
-      playMatchSound();
+      playWinChime();
       setTimeout(function () { winHanoi(); }, 350);
     }
   }
@@ -3714,14 +3732,46 @@
     }
     return arr;
   }
+  // Counts how many matching pairs ended up right next to each other in the
+  // grid (left/right/up/down neighbours) — a purely random shuffle sometimes
+  // (rarely, but it happens) puts too many pairs side by side, which makes
+  // the game feel too easy. shuffleDeckWell() below rejects those results.
+  function countGridAdjacentPairs(deck, cols) {
+    var rows = Math.ceil(deck.length / cols);
+    var count = 0;
+    for (var i = 0; i < deck.length; i++) {
+      var row = Math.floor(i / cols), col = i % cols;
+      var right = (col < cols - 1) ? i + 1 : -1;
+      var down = (row < rows - 1) ? i + cols : -1;
+      if (right !== -1 && right < deck.length && deck[i].pairId === deck[right].pairId) count++;
+      if (down !== -1 && down < deck.length && deck[i].pairId === deck[down].pairId) count++;
+    }
+    return count;
+  }
+  // Shuffles, and if too many pairs land adjacent, tries again — guarantees a
+  // well-scrambled board every time instead of only "usually".
+  function shuffleDeckWell(deck, cols) {
+    var maxAdjacent = 2, maxAttempts = 60;
+    var best = null, bestScore = Infinity;
+    for (var attempt = 0; attempt < maxAttempts; attempt++) {
+      shuffle(deck);
+      var score = countGridAdjacentPairs(deck, cols);
+      if (score <= maxAdjacent) return deck;
+      if (score < bestScore) { bestScore = score; best = deck.slice(); }
+    }
+    // Extremely unlikely to reach here, but never leave the board unshuffled.
+    for (var k = 0; k < deck.length; k++) deck[k] = best[k];
+    return deck;
+  }
   function iconTextLang(text) {
     return /[\u0370-\u03FF\u1F00-\u1FFF]/.test(text || '') ? 'el' : 'en';
   }
 
   // Modern-Greek syllabification: browsers' built-in "hyphens: auto" support for
   // Greek is unreliable (notably in Chrome), so we work out the syllable breaks
-  // ourselves and insert invisible soft hyphens (\u00AD) — the browser only shows
-  // a hyphen and breaks the line there if the word genuinely doesn't fit.
+  // ourselves and insert invisible soft hyphens (\u00AD), with CSS set to
+  // "hyphens: manual" so the browser NEVER guesses on its own — it only breaks
+  // at the soft hyphens we insert (or not at all, for words with 1 syllable).
   var GREEK_VOWELS = 'αεηιουωάέήίόύώϊϋΐΰΑΕΗΙΟΥΩΆΈΉΊΌΎΏΪΫ';
   var GREEK_DIPHTHONGS = [
     'αι', 'ει', 'οι', 'υι', 'αυ', 'ευ', 'ηυ', 'ου', 'ωυ',
@@ -3738,7 +3788,7 @@
   ];
   function isGreekVowel(ch) { return GREEK_VOWELS.indexOf(ch) !== -1; }
   function syllabifyGreek(word) {
-    if (!word || word.length < 5) return word;
+    if (!word || word.length < 2) return word;
     var chars = word.split('');
     var n = chars.length;
     var vowelPos = [];
@@ -3828,10 +3878,10 @@
       deck.push({ pairId: i, type: item.type, content: item.content });
       deck.push({ pairId: i, type: item.type, content: item.content });
     });
-    shuffle(deck);
+    var cols = chooseCols(deck.length);
+    shuffleDeckWell(deck, cols);
     cards = deck.map(function (c) { return Object.assign({ matched: false }, c); });
 
-    var cols = chooseCols(cards.length);
     var rows = Math.ceil(cards.length / cols);
 
     gameArea.classList.remove('hidden');
@@ -3894,7 +3944,7 @@
         matchedCount++;
         statPairs.textContent = matchedCount + '/' + totalPairs;
         flipped = [];
-        playMatchSound();
+        if (matchedCount === totalPairs) { playWinChime(); } else { playMatchSound(); }
         showQuote();
         if (matchedCount === totalPairs) { setTimeout(winGame, 500); }
       } else {
@@ -3931,17 +3981,18 @@
     var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
     var pieces = ['🎉', '✨', '⭐', '🌟', '🎊'];
-    for (var i = 0; i < 22; i++) {
+    for (var i = 0; i < 176; i++) {
       (function () {
         var span = document.createElement('span');
         span.className = 'confetti-piece';
         span.textContent = pieces[Math.floor(Math.random() * pieces.length)];
         span.style.left = Math.random() * 100 + 'vw';
         var duration = 1.8 + Math.random() * 1.4;
+        var delay = Math.random() * 1.8;
         span.style.animationDuration = duration + 's';
-        span.style.animationDelay = (Math.random() * 0.4) + 's';
+        span.style.animationDelay = delay + 's';
         document.body.appendChild(span);
-        setTimeout(function () { span.remove(); }, (duration + 0.5) * 1000);
+        setTimeout(function () { span.remove(); }, (delay + duration + 0.5) * 1000);
       })();
     }
   }
@@ -4012,7 +4063,7 @@
   ========================================================= */
   applyStaticTranslations();
 
-})();
+  })();
 </script>
 </body>
 </html>
