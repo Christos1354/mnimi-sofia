@@ -2897,11 +2897,24 @@
   renderEmojiCategoryTabs();
   renderEmojiPickerGrid();
 
+  var BUILTIN_ICON_PACKS = {
+    'Λέξεις: Ψυχική Ανάπτυξη': ["Υπομονή","Γαλήνη","Ευτυχία","Ηρεμία","Αγάπη","Σοφία","Ελπίδα","Ευγνωμοσύνη","Συγχώρεση","Δύναμη","Θάρρος","Ισορροπία","Ελευθερία","Αρμονία","Φώτιση","Αποδοχή","Ευγένεια","Πίστη","Ανθεκτικότητα","Δημιουργικότητα","Ταπεινότητα","Αλήθεια","Φως","Ψυχή","Πνεύμα","Ενότητα","Σιωπή","Διαλογισμός","Αισιοδοξία","Ευλογία"],
+    'Words: mental development': ["Patience","Serenity","Happiness","Calm","Love","Wisdom","Hope","Gratitude","Forgiveness","Strength","Courage","Balance","Freedom","Harmony","Enlightenment","Acceptance","Kindness","Faith","Resilience","Creativity","Humility","Truth","Light","Soul","Spirit","Unity","Silence","Meditation","Optimism","Blessing"]
+  };
   function loadIconPacks() {
     try {
       var raw = localStorage.getItem('mw_icon_packs');
       iconPacks = raw ? JSON.parse(raw) : {};
     } catch (e) { iconPacks = {}; }
+    try {
+      if (!localStorage.getItem('mw_builtin_packs_seeded')) {
+        Object.keys(BUILTIN_ICON_PACKS).forEach(function (name) {
+          if (!iconPacks[name]) iconPacks[name] = BUILTIN_ICON_PACKS[name].slice();
+        });
+        saveIconPacks();
+        localStorage.setItem('mw_builtin_packs_seeded', '1');
+      }
+    } catch (e) {}
   }
   function saveIconPacks() {
     try { localStorage.setItem('mw_icon_packs', JSON.stringify(iconPacks)); } catch (e) {}
