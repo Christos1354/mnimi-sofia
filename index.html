@@ -491,6 +491,14 @@
     height: 74%;
     border-radius: 50%;
   }
+  .symbol-badge-bare {
+    width: 100%;
+    height: 100%;
+    background: none;
+    box-shadow: none;
+    border: none;
+    text-shadow: none;
+  }
   .symbol-badge-pill {
     width: 90%;
     height: 84%;
@@ -1228,6 +1236,7 @@
       <button class="ghost-btn" id="backToMenuBtnHanoi"></button>
     </div>
   </section>
+
 </div>
 
 <div class="win-overlay hidden" id="winOverlay" role="dialog" aria-modal="true">
@@ -3917,8 +3926,8 @@
       if (c.type === 'icon') {
         frontClass = 'card-face card-front-face';
         var isWord = Array.from(c.content || '').length > 2;
-        var badgeClass = 'symbol-badge ' + (isWord ? 'symbol-badge-pill' : 'symbol-badge-round');
-        var badgeStyle = glossyChipStyle(cardBadgeColorFor(c.pairId));
+        var badgeClass = 'symbol-badge ' + (isWord ? 'symbol-badge-pill' : 'symbol-badge-bare');
+        var badgeStyle = isWord ? glossyChipStyle(cardBadgeColorFor(c.pairId)) : '';
         var badgeLang = iconTextLang(c.content);
         var displayText = (isWord && badgeLang === 'el') ? syllabifyGreek(c.content) : c.content;
         frontContent = '<div class="' + badgeClass + '" style="' + badgeStyle + '">' +
@@ -4078,5 +4087,6 @@
 
   })();
 </script>
+<script src="https://cdn.jsdelivr.net/gh/Christos1354/ypografi@main/ypografi.js" defer></script>
 </body>
 </html>
