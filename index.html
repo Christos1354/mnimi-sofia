@@ -1647,7 +1647,7 @@
     ]
   };
 
-  var currentLang = 'el';
+  var currentLang = /^el/i.test(navigator.language || 'el') ? 'el' : 'en'; // 13-10-2026: γλώσσα επισκέπτη / visitor's language
   try {
     var savedLang = localStorage.getItem('mw_lang');
     if (savedLang === 'el' || savedLang === 'en') currentLang = savedLang;
